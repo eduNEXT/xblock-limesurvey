@@ -1,151 +1,131 @@
-LimeSurvey service for tutor
+LimeSurvey XBlock
 #############################
 
-Testing with Docker
-********************
+Purpose
+*******
 
-This XBlock comes with a Docker test environment ready to build, based on the xblock-sdk workbench. To build and run it::
+`XBlock`_ is the Open edX component architecture for building custom
+learning interactives.
 
-    $ make dev.run
+.. _XBlock: https://openedx.org/r/xblock
 
-The XBlock SDK Workbench, including this XBlock, will be available on the list of XBlocks at http://localhost:8000
+LimeSurvey XBlock allows students to view and complete
+the different surveys assigned to them.
 
-Translating
-*************
+Getting Started
+***************
 
-Internationalization (i18n) is when a program is made aware of multiple languages.
-Localization (l10n) is adapting a program to local language and cultural habits.
+You can see the LimeSurvey in action in the XBlock Workbench.  Running the Workbench requires having docker running.
 
-Use the locale directory to provide internationalized strings for your XBlock project.
-For more information on how to enable translations, visit the
-`Open edX XBlock tutorial on Internationalization <https://edx.readthedocs.org/projects/xblock-tutorial/en/latest/edx_platform/edx_lms.html>`_.
+.. code:: bash
 
-This cookiecutter template uses `django-statici18n <https://django-statici18n.readthedocs.io/en/latest/>`_
-to provide translations to static javascript using ``gettext``.
+    git clone git@github.com:eduNEXT/xblock-limesurvey
+    virtualenv venv/
+    source venv/bin/activate
+    cd xblock-limesurvey
+    make upgrade
+    make install
+    make dev.run
 
-The included Makefile contains targets for extracting, compiling and validating translatable strings.
-The general steps to provide multilingual messages for a Python program (or an XBlock) are:
+You can interact with the LimeSurveyXBlock in the Workbench by navigating to http://localhost:8000
 
-1. Mark translatable strings.
-2. Run i18n tools to create raw message catalogs.
-3. Create language specific translations for each message in the catalogs.
-4. Use ``gettext`` to translate strings.
+For details regarding how to deploy this or any other XBlock in the lms instance, see the `installing-the-xblock`_ documentation.
 
-1. Mark translatable strings
-=============================
+.. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
-Mark translatable strings in python::
+Getting Help
+************
 
+Documentation
+=============
 
-    from django.utils.translation import ugettext as _
+If you're having trouble, we have discussion forums at
+https://discuss.openedx.org where you can connect with others in the
+community.
 
-    # Translators: This comment will appear in the `.po` file.
-    message = _("This will be marked.")
+Our real-time conversations are on Slack. You can request a `Slack
+invitation`_, then join our `community Slack workspace`_.
 
-See `edx-developer-guide <https://edx.readthedocs.io/projects/edx-developer-guide/en/latest/internationalization/i18n.html#python-source-code>`__
-for more information.
+For anything non-trivial, the best path is to open an issue in this
+repository with as many details about the issue you are facing as you
+can provide.
 
-You can also use ``gettext`` to mark strings in javascript::
+https://github.com/eduNEXT/xblock-limesurvey/issues
 
+For more information about these options, see the `Getting Help`_ page.
 
-    // Translators: This comment will appear in the `.po` file.
-    var message = gettext("Custom message.");
+.. _Slack invitation: https://openedx.org/slack
+.. _community Slack workspace: https://openedx.slack.com/
+.. _Getting Help: https://openedx.org/getting-help
 
-See `edx-developer-guide <https://edx.readthedocs.io/projects/edx-developer-guide/en/latest/internationalization/i18n.html#javascript-files>`__
-for more information.
+License
+*******
 
-2. Run i18n tools to create Raw message catalogs
-=================================================
+The code in this repository is licensed under the AGPL-3.0 unless
+otherwise noted.
 
-This cookiecutter template offers multiple make targets which are shortcuts to
-use `edx-i18n-tools <https://github.com/openedx/i18n-tools>`_.
+Please see `LICENSE.txt <LICENSE.txt>`_ for details.
 
-After marking strings as translatable we have to create the raw message catalogs.
-These catalogs are created in ``.po`` files. For more information see
-`GNU PO file documentation <https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html>`_.
-These catalogs can be created by running::
+Contributing
+************
 
+Contributions are very welcome.
+Please read `How To Contribute <https://openedx.org/r/how-to-contribute>`_ for details.
 
-    $ make extract_translations
+This project is currently accepting all types of contributions, bug fixes,
+security fixes, maintenance work, or new features.  However, please make sure
+to have a discussion about your new feature idea with the maintainers prior to
+beginning development to maximize the chances of your change being accepted.
+You can start a conversation by creating a new issue on this repo summarizing
+your idea.
 
-The previous command will create the necessary ``.po`` files under
-``xblock-limesurvey/limesurvey/locale/en/LC_MESSAGES/text.po``.
-The ``text.po`` file is created from the ``django-partial.po`` file created by
-``django-admin makemessages`` (`makemessages documentation <https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#message-files>`_),
-this is why you will not see a ``django-partial.po`` file.
+The Open edX Code of Conduct
+****************************
 
-3. Create language specific translations
-==============================================
+All community members are expected to follow the `Open edX Code of Conduct`_.
 
-3.1 Add translated strings
----------------------------
+.. _Open edX Code of Conduct: https://openedx.org/code-of-conduct/
 
-After creating the raw message catalogs, all translations should be filled out by the translator.
-One or more translators must edit the entries created in the message catalog, i.e. the ``.po`` file(s).
-The format of each entry is as follows::
+People
+******
 
-    #  translator-comments
-    A. extracted-comments
-    #: reference…
-    #, flag…
-    #| msgid previous-untranslated-string
-    msgid 'untranslated message'
-    msgstr 'mensaje traducido (translated message)'
+The assigned maintainers for this component and other project details may be
+found in `Backstage`_. Backstage pulls this data from the ``catalog-info.yaml``
+file in this repo.
 
-For more information see
-`GNU PO file documentation <https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html>`_.
+.. _Backstage: https://backstage.openedx.org/catalog/default/component/{{ cookiecutter.repo_name }}
 
-To use translations from transifex use the follow Make target to pull translations::
+Reporting Security Issues
+*************************
 
-    $ make pull_translations
+Please do not report security issues in public. Please email security@tcril.org.
 
-See `config instructions <https://github.com/openedx/i18n-tools#transifex-commands>`_ for information on how to set up your
-transifex credentials.
+.. |pypi-badge| image:: https://img.shields.io/pypi/v/{{ cookiecutter.repo_name }}.svg
+    :target: https://pypi.python.org/pypi/{{ cookiecutter.repo_name }}/
+    :alt: PyPI
 
-See `transifex documentation <https://docs.transifex.com/integrations/django>`_ for more details about integrating
-django with transiflex.
+.. |ci-badge| image:: https://github.com/openedx/{{ cookiecutter.repo_name }}/workflows/Python%20CI/badge.svg?branch=main
+    :target: https://github.com/openedx/{{ cookiecutter.repo_name }}/actions
+    :alt: CI
 
-3.2 Compile translations
--------------------------
+.. |codecov-badge| image:: https://codecov.io/github/openedx/{{ cookiecutter.repo_name }}/coverage.svg?branch=main
+    :target: https://codecov.io/github/openedx/{{ cookiecutter.repo_name }}?branch=main
+    :alt: Codecov
 
-Once translations are in place, use the following Make target to compile the translation catalogs ``.po`` into
-``.mo`` message files::
+.. |doc-badge| image:: https://readthedocs.org/projects/{{ cookiecutter.repo_name }}/badge/?version=latest
+    :target: https://docs.openedx.org/projects/{{ cookiecutter.repo_name }}
+    :alt: Documentation
 
-    $ make compile_translations
+.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.repo_name }}.svg
+    :target: https://pypi.python.org/pypi/{{ cookiecutter.repo_name }}/
+    :alt: Supported Python versions
 
-The previous command will compile ``.po`` files using
-``django-admin compilemessages`` (`compilemessages documentation <https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#compiling-message-files>`_).
-After compiling the ``.po`` file(s), ``django-statici18n`` is used to create language specific catalogs. See
-``django-statici18n`` `documentation <https://django-statici18n.readthedocs.io/en/latest/>`_ for more information.
+.. |license-badge| image:: https://img.shields.io/github/license/openedx/{{ cookiecutter.repo_name }}.svg
+    :target: https://github.com/openedx/{{ cookiecutter.repo_name }}/blob/main/LICENSE.txt
+    :alt: License
 
-To upload translations to transiflex use the follow Make target::
-
-    $ make push_translations
-
-See `config instructions <https://github.com/openedx/i18n-tools#transifex-commands>`_ for information on how to set up your
-transifex credentials.
-
-See `transifex documentation <https://docs.transifex.com/integrations/django>`_ for more details about integrating
-django with transiflex.
-
- **Note:** The ``dev.run`` make target will automatically compile any translations.
-
- **Note:** To check if the source translation files (``.po``) are up-to-date run::
-
-     $ make detect_changed_source_translations
-
-4. Use ``gettext`` to translate strings
-========================================
-
-Django will automatically use ``gettext`` and the compiled translations to translate strings.
-
-Troubleshooting
-****************
-
-If there are any errors compiling ``.po`` files run the following command to validate your ``.po`` files::
-
-    $ make validate
-
-See `django's i18n troubleshooting documentation
-<https://docs.djangoproject.com/en/3.2/topics/i18n/translation/#troubleshooting-gettext-incorrectly-detects-python-format-in-strings-with-percent-signs>`_
-for more information.
+.. TODO: Choose one of the statuses below and remove the other status-badge lines.
+.. |status-badge| image:: https://img.shields.io/badge/Status-Experimental-yellow
+.. .. |status-badge| image:: https://img.shields.io/badge/Status-Maintained-brightgreen
+.. .. |status-badge| image:: https://img.shields.io/badge/Status-Deprecated-orange
+.. .. |status-badge| image:: https://img.shields.io/badge/Status-Unsupported-red
