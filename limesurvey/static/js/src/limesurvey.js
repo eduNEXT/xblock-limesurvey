@@ -2,16 +2,16 @@
 function LimeSurveyXBlock(runtime, element) {
 
     function updateCount(result) {
-        $('.count', element).text(result.count);
+        $('.surveys', element).text(result.surveys);
     }
 
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
+    var handlerUrl = runtime.handlerUrl(element, 'auth_limesurvey');
 
     $('p', element).click(function(eventObject) {
         $.ajax({
             type: "POST",
             url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
+            data: JSON.stringify({"status": "Success"}),
             success: updateCount
         });
     });
