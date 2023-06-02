@@ -33,6 +33,18 @@ For details regarding how to deploy this or any other XBlock in the lms instance
 
 .. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
+Enabling in Studio
+******************
+
+You can enable the LimeSurvey XBlock in studio through the
+advanced settings.
+
+1. From the main page of a specific course, navigate to
+   ``Settings -> Advanced Settings`` from the top menu.
+2. Check for the ``Advanced Module List`` policy key, and add
+   ``"limesurvey"`` to the policy value list.
+3. Click the "Save changes" button.
+
 Getting Help
 ************
 
