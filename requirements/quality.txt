@@ -81,7 +81,7 @@ mako==1.2.4
     # via
     #   -r requirements/test.txt
     #   xblock-utils
-markupsafe==2.1.2
+markupsafe==2.1.3
     # via
     #   -r requirements/test.txt
     #   jinja2
@@ -189,7 +189,7 @@ tomli==2.0.1
     #   pytest
 tomlkit==0.11.8
     # via pylint
-typing-extensions==4.6.2
+typing-extensions==4.6.3
     # via
     #   -r requirements/test.txt
     #   asgiref
