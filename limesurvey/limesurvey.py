@@ -30,8 +30,7 @@ class LimeSurveyXBlock(XBlock):
     # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
         """
-        The primary view of the LimeSurveyXBlock, shown to students
-        when viewing courses.
+        Render the primary view of the LimeSurveyXBlock, shown to students when viewing courses.
         """
         if context:
             pass  # TO-DO: do something based on the context.
@@ -53,7 +52,7 @@ class LimeSurveyXBlock(XBlock):
     @XBlock.json_handler
     def increment_count(self, data, suffix=''):
         """
-        An example handler, which increments the data.
+        Increment the data.
         """
         if suffix:
             pass  # TO-DO: Use the suffix when storing data.
@@ -67,7 +66,7 @@ class LimeSurveyXBlock(XBlock):
     # workbench while developing your XBlock.
     @staticmethod
     def workbench_scenarios():
-        """A canned scenario for display in the workbench."""
+        """Return a canned scenario for display in the workbench."""
         return [
             ("LimeSurveyXBlock",
              """<limesurvey/>
@@ -84,7 +83,8 @@ class LimeSurveyXBlock(XBlock):
     @staticmethod
     def _get_statici18n_js_url():
         """
-        Returns the Javascript translation file for the currently selected language, if any.
+        Return the Javascript translation file for the currently selected language, if any.
+
         Defaults to English if available.
         """
         locale_code = translation.get_language()
@@ -102,6 +102,6 @@ class LimeSurveyXBlock(XBlock):
     @staticmethod
     def get_dummy():
         """
-        Dummy method to generate initial i18n
+        Return dummy method to generate initial i18n.
         """
         return translation.gettext_noop('Dummy')
