@@ -3,7 +3,7 @@
 import pkg_resources
 from django.utils import translation
 from xblock.core import XBlock
-from xblock.fields import Integer, Scope
+from xblock.fields import Scope, String
 from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
 
@@ -16,10 +16,22 @@ class LimeSurveyXBlock(XBlock):
     # Fields are defined on the class.  You can access them in your code as
     # self.<fieldname>.
 
-    # TO-DO: delete count, and define your own fields.
-    count = Integer(
-        default=0, scope=Scope.user_state,
-        help="A simple counter, to show something happening",
+    display_name = String(
+        display_name="Display Name",
+        default="LimeSurvey",
+        scope=Scope.settings
+    )
+
+    survey_id = String(
+        default=None,
+        scope=Scope.settings,
+        help="The ID of the survey to be embedded",
+    )
+
+    access_key = String(
+        default=None,
+        scope=Scope.settings,
+        help="Authentication key for the LimeSurvey API",
     )
 
     def resource_string(self, path):
@@ -44,23 +56,40 @@ class LimeSurveyXBlock(XBlock):
             frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
 
         frag.add_javascript(self.resource_string("static/js/src/limesurvey.js"))
-        frag.initialize_js('LimeSurveyXBlock')
+        frag.initialize_js("LimeSurveyXBlock")
         return frag
 
-    # TO-DO: change this handler to perform your own actions.  You may need more
-    # than one handler, or you may not need any handlers at all.
-    @XBlock.json_handler
-    def increment_count(self, data, suffix=''):
+    def studio_view(self, _context=None):
         """
-        Increment the data.
+        The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        if suffix:
-            pass  # TO-DO: Use the suffix when storing data.
-        # Just to show data coming in...
-        assert data['hello'] == 'world'
+        html = self.resource_string("static/html/limesurvey_edit.html")
+        frag = Fragment(
+            html.format(
+                access_key=self.access_key, survey_id=self.survey_id, display_name=self.display_name,
+            ),
+        )
+        frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
-        self.count += 1
-        return {"count": self.count}
+        # Add i18n js
+        statici18n_js_url = self._get_statici18n_js_url()
+        if statici18n_js_url:
+            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+
+        frag.add_javascript(self.resource_string("static/js/src/limesurveyEdit.js"))
+        frag.initialize_js("LimeSurveyXBlock")
+        return frag
+
+    @XBlock.json_handler
+    def studio_submit(self, data, suffix=""):  # pylint: disable=unused-argument
+        """
+        Called when submitting the form in Studio.
+        """
+        self.display_name = data.get("display_name")
+        self.access_key = data.get("access_key")
+        self.survey_id = data.get("survey_id")
+
+        return {"result": "success"}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
