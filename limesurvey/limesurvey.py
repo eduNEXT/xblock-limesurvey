@@ -267,9 +267,7 @@ class LimeSurveyXBlock(XBlock):
         """
         Show the survey URL and access code to the user
         """
-        URL = "http://limesurvey.local.overhang.io:8082"
-
-        self.survey_url = f"{URL}/{self.survey_id}"
+        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
         self.access_code = "aMGZtTyFFVhhA0z"
 
         return {"survey_url": self.survey_url, "access_code": self.access_code}
