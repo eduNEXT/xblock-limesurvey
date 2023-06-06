@@ -34,6 +34,18 @@ class LimeSurveyXBlock(XBlock):
         help="Authentication key for the LimeSurvey API",
     )
 
+    survey_url = String(
+        default=None,
+        scope=Scope.user_state_summary,
+        help="The URL of the survey",
+    )
+
+    access_code = String(
+        default=None,
+        scope=Scope.user_state,
+        help="The access code of the user for the survey",
+    )
+
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -90,6 +102,18 @@ class LimeSurveyXBlock(XBlock):
         self.survey_id = data.get("survey_id")
 
         return {"result": "success"}
+
+    @XBlock.json_handler
+    def get_survey_url(self, data, suffix=''): # pylint: disable=unused-argument
+        """
+        Show the survey URL and access code to the user
+        """
+        URL = "http://limesurvey.local.overhang.io:8082"
+
+        self.survey_url = f"{URL}/{self.survey_id}"
+        self.access_code = "aMGZtTyFFVhhA0z"
+
+        return {"survey_url": self.survey_url, "access_code": self.access_code}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

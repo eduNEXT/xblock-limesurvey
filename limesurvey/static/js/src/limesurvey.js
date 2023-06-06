@@ -1,28 +1,20 @@
 /* Javascript for LimeSurveyXBlock. */
 function LimeSurveyXBlock(runtime, element) {
 
-    function updateCount(result) {
-        $('.count', element).text(result.count);
+    function setUrl(result) {
+        $('.survey-url', element).text(result.survey_url);
+        $('.survey-url', element).attr('href', result.survey_url);
+        $('.access-code', element).text(result.access_code);
     }
 
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
+    var handlerUrl = runtime.handlerUrl(element, 'get_survey_url');
 
-    $('p', element).click(function(eventObject) {
+    $('.get-survey-button', element).click(function(eventObject) {
         $.ajax({
             type: "POST",
             url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
-            success: updateCount
+            data: JSON.stringify({"result": "success"}),
+            success: setUrl
         });
-    });
-
-    $(function ($) {
-        /*
-        Use `gettext` provided by django-statici18n for static translations
-
-        var gettext = LimeSurveyXBlocki18n.gettext;
-        */
-
-        /* Here's where you'd do things on page load. */
     });
 }
