@@ -25,6 +25,19 @@ install-dev:
 
 install: install-test
 
+quality:  ## Run the quality checks
+	pylint --rcfile=pylintrc done
+	python setup.py -q sdist
+	twine check dist/*
+
+test:  ## Run the tests
+	mkdir -p var
+	rm -rf .coverage
+	python -m coverage run --rcfile=.coveragerc  -m pytest
+
+covreport:  ## Show the coverage results
+	python -m coverage report -m --skip-covered
+
 # Define PIP_COMPILE_OPTS=-v to get more information during make upgrade.
 PIP_COMPILE = pip-compile --upgrade $(PIP_COMPILE_OPTS)
 
