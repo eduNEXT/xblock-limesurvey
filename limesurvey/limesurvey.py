@@ -1,9 +1,11 @@
 """TO-DO: Write a description of what this XBlock is."""
 
 import pkg_resources
+import requests
 from django.utils import translation
+from django.conf import settings
 from xblock.core import XBlock
-from xblock.fields import Scope, String
+from xblock.fields import Scope, String, Integer
 from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
 
@@ -22,8 +24,8 @@ class LimeSurveyXBlock(XBlock):
         scope=Scope.settings
     )
 
-    survey_id = String(
-        default=None,
+    survey_id = Integer(
+        default=0,
         scope=Scope.settings,
         help="The ID of the survey to be embedded",
     )
@@ -32,6 +34,18 @@ class LimeSurveyXBlock(XBlock):
         default=None,
         scope=Scope.settings,
         help="Authentication key for the LimeSurvey API",
+    )
+
+    survey_url = String(
+        default=None,
+        scope=Scope.user_state_summary,
+        help="The URL of the survey",
+    )
+
+    access_code = String(
+        default=None,
+        scope=Scope.user_state,
+        help="The access code of the user for the survey",
     )
 
     def resource_string(self, path):
@@ -46,6 +60,10 @@ class LimeSurveyXBlock(XBlock):
         """
         if context:
             pass  # TO-DO: do something based on the context.
+
+        anonymous_user_id = self.runtime.anonymous_student_id
+        self.add_participant_to_survey(self.runtime.get_real_user(anonymous_user_id), anonymous_user_id)
+
         html = self.resource_string("static/html/limesurvey.html")
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -89,7 +107,83 @@ class LimeSurveyXBlock(XBlock):
         self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
 
-        return {"result": "success"}
+        return {
+            "result": "success",
+        }
+
+    @XBlock.json_handler
+    def get_survey(self, data, suffix=""): # pylint: disable=unused-argument
+        """
+        Return the survey URL and access code for the user.
+        """
+        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
+
+        anonymous_user_id = self.runtime.anonymous_student_id
+        self.access_code = self.get_student_access_code(anonymous_user_id)
+
+        return {
+            "survey_url": self.survey_url,
+            "access_code": self.access_code,
+        }
+
+    def get_student_access_code(self, anonymous_user_id):
+        """
+        Return the access code for the current user.
+        """
+        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        if not limesurvey_api_url:
+            return False
+
+        payload = {
+            "method": "get_participant_properties",
+            "params": [
+                self.access_key,
+                self.survey_id,
+                {
+                    "attribute_1": anonymous_user_id,
+                },
+            ],
+            "id": 1,
+        }
+
+        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
+
+        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
+            raise Exception(response.text)
+
+        return response.json().get("result").get("token")
+
+    def add_participant_to_survey(self, user, anonymous_user_id):
+        """
+        Add the student as participant to specified survey.
+        """
+        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        if not limesurvey_api_url:
+            return False
+
+        firstname, lastname = user.profile.name.split()
+        payload = {
+            "method": "add_participants",
+            "params": [
+                self.access_key,
+                self.survey_id,
+                [
+                    {
+                        "email": user.email,
+                        "lastname": lastname,
+                        "firstname": firstname,
+                        "attribute_1": anonymous_user_id,
+                    }
+                ]
+            ],
+            "id": 1,
+        }
+
+        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
+        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
+            raise Exception(response.text)
+
+        return True
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

@@ -33,6 +33,15 @@ For details regarding how to deploy this or any other XBlock in the lms instance
 
 .. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
+Setup LimeSurvey
+****************
+From the LimeSurvey administrator you must enable the use of the API:
+
+1. Login in the LimeSurvey admin → ``limesurvey.local.overhang.io/admin``
+2. Navigate to Configuration → Settings → Global → Interfaces.
+3. Enable ``JSON-RPC`` in RPC interface enabled.
+4. Save changes.
+
 Enabling in Studio
 ******************
 

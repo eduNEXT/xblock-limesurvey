@@ -1,3 +1,11 @@
 <div class="limesurvey_block">
-<p>LimeSurveyXBlock</p>
+    <ul>
+        <li>
+            <a href="{self.survey_url}" target="_blank" rel="noopener noreferrer" class="survey-url">{self.survey_url}</a>
+        </li>
+        <li>
+            <p>Access Code: <span class="access-code">{self.access_code}</span></p>
+        </li>
+    </ul>
+    <button class="button action-primary get-survey-button">Get Survey URL</button>
 </div>
