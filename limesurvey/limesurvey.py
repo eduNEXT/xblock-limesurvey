@@ -262,54 +262,6 @@ class LimeSurveyXBlock(XBlock):
 
         return response.json()
 
-    @XBlock.json_handler
-    def get_survey_url(self, data, suffix=''): # pylint: disable=unused-argument
-        """
-        Show the survey URL and access code to the user
-        """
-        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
-
-        anonymous_user_id = self.runtime.anonymous_student_id
-        user = self.runtime.get_real_user(anonymous_user_id)
-        firstname, lastname = user.profile.name.split()
-
-        # add user to the survey
-        payload = {
-            "method": "add_participants",
-            "params": [
-                self.access_key,
-                self.survey_id,
-                [
-                    {
-                        "email": user.email,
-                        "lastname": lastname,
-                        "firstname": firstname,
-                        "attribute_1": anonymous_user_id,
-                    }
-                ]
-            ],
-            "id": 1,
-        }
-
-        # TO-DO: avoid duplicate user in the survey
-        requests.post(settings.LIMESURVEY_INTERNAL_API, json=payload).json()
-
-        # Get the access code for the user
-        payload = {
-            "method": "get_participant_properties",
-            "params": [
-                self.access_key,
-                self.survey_id,
-                {"attribute_1": anonymous_user_id},
-            ],
-            "id": 1,
-        }
-
-        response = requests.post(settings.LIMESURVEY_INTERNAL_API, json=payload).json()
-        self.access_code = response["result"]["token"]
-
-        return {"survey_url": self.survey_url, "access_code": self.access_code}
-
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
     @staticmethod
