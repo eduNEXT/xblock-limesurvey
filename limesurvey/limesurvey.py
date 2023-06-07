@@ -132,7 +132,7 @@ class LimeSurveyXBlock(XBlock):
         """
         limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
         if not limesurvey_api_url:
-            return
+            return False
 
         payload = {
             "method": "get_participant_properties",
@@ -147,7 +147,8 @@ class LimeSurveyXBlock(XBlock):
         }
 
         response = requests.post(limesurvey_api_url, json=payload, timeout=1)
-        if response.status_code != requests.status_codes.codes.ok:
+
+        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
 
         return response.json().get("result").get("token")
@@ -179,7 +180,7 @@ class LimeSurveyXBlock(XBlock):
         }
 
         response = requests.post(limesurvey_api_url, json=payload, timeout=1)
-        if response.status_code != requests.status_codes.codes.ok:
+        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
 
         return True
