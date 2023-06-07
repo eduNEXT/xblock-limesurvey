@@ -7,7 +7,7 @@ function LimeSurveyXBlock(runtime, element) {
         $('.access-code', element).text(result.access_code);
     }
 
-    var handlerUrl = runtime.handlerUrl(element, 'get_survey_url');
+    var handlerUrl = runtime.handlerUrl(element, 'get_survey');
 
     $('.get-survey-button', element).click(function(eventObject) {
         $.ajax({
