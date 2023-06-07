@@ -146,7 +146,7 @@ class LimeSurveyXBlock(XBlock):
             "id": 1,
         }
 
-        response = requests.post(limesurvey_api_url, json=payload)
+        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception(response.text)
 
@@ -178,7 +178,7 @@ class LimeSurveyXBlock(XBlock):
             "id": 1,
         }
 
-        response = requests.post(limesurvey_api_url, json=payload)
+        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
         if response.status_code != requests.status_codes.codes.ok:
             raise Exception(response.text)
 

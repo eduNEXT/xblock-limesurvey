@@ -91,7 +91,7 @@ twine==4.0.2
     # via -r requirements/ci.in
 typing-extensions==4.6.3
     # via rich
-urllib3==2.0.2
+urllib3==2.0.3
     # via
     #   requests
     #   twine
