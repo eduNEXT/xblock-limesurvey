@@ -60,9 +60,15 @@ class LimeSurveyXBlock(XBlock):
         """
         if context:
             pass  # TO-DO: do something based on the context.
+        
+        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
 
-        anonymous_user_id = self.runtime.anonymous_student_id
-        self.add_participant_to_survey(self.runtime.get_real_user(anonymous_user_id), anonymous_user_id)
+        if limesurvey_api_url:
+            anonymous_user_id = self.runtime.anonymous_student_id
+            self.add_participant_to_survey(
+                self.runtime.get_real_user(anonymous_user_id),
+                anonymous_user_id,
+            )
 
         html = self.resource_string("static/html/limesurvey.html")
         frag = Fragment(html.format(self=self))
@@ -134,56 +140,58 @@ class LimeSurveyXBlock(XBlock):
         if not limesurvey_api_url:
             return False
 
-        payload = {
-            "method": "get_participant_properties",
-            "params": [
-                self.access_key,
-                self.survey_id,
-                {
-                    "attribute_1": anonymous_user_id,
-                },
-            ],
-            "id": 1,
-        }
+        response = self._invoke(
+            "get_participant_properties",
+            self.survey_id,
+            {"attribute_1": anonymous_user_id}
+        )
 
-        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
-
-        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
-            raise Exception(response.text)
-
-        return response.json().get("result").get("token")
+        return response.get("result").get("token")
 
     def add_participant_to_survey(self, user, anonymous_user_id):
         """
         Add the student as participant to specified survey.
         """
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
-        if not limesurvey_api_url:
-            return False
-
         firstname, lastname = user.profile.name.split()
+
+        participant = {
+            "email": user.email,
+            "lastname": lastname,
+            "firstname": firstname,
+            "attribute_1": anonymous_user_id,
+        }
+
+        self._invoke("add_participants", self.survey_id, [participant])
+
+        return True
+
+    def _invoke(self, method: str, *params) -> dict:
+        """
+        Invoke a method on the LimeSurvey API.
+
+        args:
+            method: The method to invoke
+            params: The parameters to pass to the method
+
+        returns:
+            The response from the API
+        """
         payload = {
-            "method": "add_participants",
-            "params": [
-                self.access_key,
-                self.survey_id,
-                [
-                    {
-                        "email": user.email,
-                        "lastname": lastname,
-                        "firstname": firstname,
-                        "attribute_1": anonymous_user_id,
-                    }
-                ]
-            ],
+            "method": method,
+            "params": [self.access_key, *params],
             "id": 1,
         }
 
-        response = requests.post(limesurvey_api_url, json=payload, timeout=1)
+        response = requests.post(
+            settings.LIMESURVEY_INTERNAL_API,
+            json=payload,
+            timeout=1,
+        )
+
         if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
 
-        return True
+        return response.json()
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
