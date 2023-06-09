@@ -1,11 +1,15 @@
 <div class="limesurvey_block">
-    <ul>
-        <li>
-            <a href="{self.survey_url}" target="_blank" rel="noopener noreferrer" class="survey-url">{self.survey_url}</a>
-        </li>
-        <li>
-            <p>Access Code: <span class="access-code">{self.access_code}</span></p>
-        </li>
-    </ul>
-    <button class="button action-primary get-survey-button">Get Survey URL</button>
+    <p>Survey URL: <a href="{self.survey_url}" class="survey-url">{self.survey_url}</a></p>
+    <p>Access Code: <span class="access-code">{self.access_code}</span></p>
+    <button class="button action-primary get-survey-button">Get Survey</button>
+    <iframe
+        class="survey-iframe"
+        src="{self.survey_url}"
+        frameborder="0"
+        width="960"
+        height="569"
+        allowfullscreen="true"
+        mozallowfullscreen="true"
+        webkitallowfullscreen="true">
+    </iframe>
 </div>
