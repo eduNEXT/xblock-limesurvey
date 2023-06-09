@@ -6,7 +6,7 @@
 xblock-limesurvey
 =================
 
-LimeSurvey service for tutor
+LimeSurvey XBlock for tutor
 
 Contents:
 

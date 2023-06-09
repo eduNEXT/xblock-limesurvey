@@ -120,11 +120,11 @@ CHANGELOG = open(os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst'), encod
 setup(
     name='xblock-limesurvey',
     version=VERSION,
-    description="""LimeSurvey service for tutor""",
+    description="""LimeSurvey XBlock for tutor""",
     long_description=README + '\n\n' + CHANGELOG,
-    author='edX',
-    author_email='oscm@edx.org',
-    url='https://github.com/openedx/xblock-limesurvey',
+    author='eduNEXT',
+    author_email='technical@edunext.co',
+    url='https://github.com/eduNEXT/xblock-limesurvey',
     packages=find_packages(
         include=['limesurvey', 'limesurvey.*'],
         exclude=["*tests"],
