@@ -60,7 +60,7 @@ class LimeSurveyXBlock(XBlock):
         """
         if context:
             pass  # TO-DO: do something based on the context.
-        
+
         limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
 
         if limesurvey_api_url:
