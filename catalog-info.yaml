@@ -5,7 +5,7 @@ apiVersion: backstage.io/v1alpha1
 kind: ""
 metadata:
   name: 'xblock-limesurvey'
-  description: "LimeSurvey XBlock for tutor"
+  description: "LimeSurvey XBlock for Open edX"
   annotations:
     # (Optional) Annotation keys and values can be whatever you want.
     # We use it in Open edX repos to have a comma-separated list of GitHub user

@@ -6,7 +6,7 @@
 xblock-limesurvey
 =================
 
-LimeSurvey XBlock for tutor
+LimeSurvey XBlock for Open edX
 
 Contents:
 
