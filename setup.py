@@ -147,7 +147,10 @@ setup(
     entry_points={
         'xblock.v1': [
             'limesurvey = limesurvey:LimeSurveyXBlock',
-        ]
+        ],
+        "lms.djangoapp": [
+            "limesurvey = limesurvey.apps:LimeSurveyConfig",
+        ],
     },
     package_data=package_data("limesurvey", ["static", "public"]),
 )
