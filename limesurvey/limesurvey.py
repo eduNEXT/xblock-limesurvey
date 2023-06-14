@@ -70,6 +70,7 @@ class LimeSurveyXBlock(XBlock):
                     self.runtime.get_real_user(anonymous_user_id),
                     anonymous_user_id,
                 )
+            self.get_survey(anonymous_user_id)
 
         html = self.resource_string("static/html/limesurvey.html")
         frag = Fragment(html.format(self=self))
@@ -118,20 +119,12 @@ class LimeSurveyXBlock(XBlock):
             "result": "success",
         }
 
-    @XBlock.json_handler
-    def get_survey(self, data, suffix=""): # pylint: disable=unused-argument
+    def get_survey(self, anonymous_user_id: str):
         """
         Return the survey URL and access code for the user.
         """
         self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
-
-        anonymous_user_id = self.runtime.anonymous_student_id
         self.access_code = self.get_student_access_code(anonymous_user_id)
-
-        return {
-            "survey_url": self.survey_url,
-            "access_code": self.access_code,
-        }
 
     def user_in_survey(self, anonymous_user_id: str) -> bool:
         """

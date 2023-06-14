@@ -1,15 +1,5 @@
 <div class="limesurvey_block">
-    <p>Survey URL: <a href="{self.survey_url}" class="survey-url">{self.survey_url}</a></p>
-    <p>Access Code: <span class="access-code">{self.access_code}</span></p>
-    <button class="button action-primary get-survey-button">Get Survey</button>
-    <iframe
-        class="survey-iframe"
-        src="{self.survey_url}"
-        frameborder="0"
-        width="960"
-        height="569"
-        allowfullscreen="true"
-        mozallowfullscreen="true"
-        webkitallowfullscreen="true">
+    <iframe class="survey-iframe" src="{self.survey_url}?token={self.access_code}" frameborder="0" width="960"
+        height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true">
     </iframe>
 </div>
