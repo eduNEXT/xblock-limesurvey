@@ -65,10 +65,11 @@ class LimeSurveyXBlock(XBlock):
 
         if limesurvey_api_url:
             anonymous_user_id = self.runtime.anonymous_student_id
-            self.add_participant_to_survey(
-                self.runtime.get_real_user(anonymous_user_id),
-                anonymous_user_id,
-            )
+            if not self.user_in_survey(anonymous_user_id):
+                self.add_participant_to_survey(
+                    self.runtime.get_real_user(anonymous_user_id),
+                    anonymous_user_id,
+                )
 
         html = self.resource_string("static/html/limesurvey.html")
         frag = Fragment(html.format(self=self))
@@ -131,6 +132,25 @@ class LimeSurveyXBlock(XBlock):
             "survey_url": self.survey_url,
             "access_code": self.access_code,
         }
+
+    def user_in_survey(self, anonymous_user_id: str) -> bool:
+        """
+        Check if the user is already in the survey.
+
+        Args:
+            anonymous_user_id (str): The anonymous user ID
+        """
+        params = [
+            self.survey_id, 0, 1, False,
+            ["attribute_1"], {"attribute_1": anonymous_user_id}
+        ]
+
+        response = self._invoke("list_participants", *params)
+
+        if isinstance(response.get("result"), list):
+            return len(response.get("result")) > 0
+
+        return False
 
     def get_student_access_code(self, anonymous_user_id):
         """
