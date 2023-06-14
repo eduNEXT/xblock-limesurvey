@@ -92,7 +92,9 @@ class LimeSurveyXBlock(XBlock):
         html = self.resource_string("static/html/limesurvey_edit.html")
         frag = Fragment(
             html.format(
-                access_key=self.access_key, survey_id=self.survey_id, display_name=self.display_name,
+                access_key=self.access_key,
+                survey_id=self.survey_id,
+                display_name=self.display_name,
             ),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -122,6 +124,9 @@ class LimeSurveyXBlock(XBlock):
     def get_survey(self, anonymous_user_id: str):
         """
         Return the survey URL and access code for the user.
+        
+        args:
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
         self.access_code = self.get_student_access_code(anonymous_user_id)
@@ -131,7 +136,7 @@ class LimeSurveyXBlock(XBlock):
         Check if the user is already in the survey.
 
         Args:
-            anonymous_user_id (str): The anonymous user ID
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         params = [
             self.survey_id, 0, 1, False,
@@ -148,6 +153,9 @@ class LimeSurveyXBlock(XBlock):
     def get_student_access_code(self, anonymous_user_id):
         """
         Return the access code for the current user.
+        
+        args:
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
         if not limesurvey_api_url:
@@ -167,7 +175,7 @@ class LimeSurveyXBlock(XBlock):
 
         args:
             user: The user to add as participant
-            anonymous_user_id: The anonymous user id of the user
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         firstname, lastname = None, None
 
@@ -187,15 +195,13 @@ class LimeSurveyXBlock(XBlock):
 
         self._invoke("add_participants", self.survey_id, [participant])
 
-        return True
-
     def _invoke(self, method: str, *params) -> dict:
         """
         Invoke a method on the LimeSurvey API.
 
         args:
-            method: The method to invoke
-            params: The parameters to pass to the method
+            method (str): The method to invoke
+            params (*args): The parameters to pass to the method
 
         returns:
             The response from the API
