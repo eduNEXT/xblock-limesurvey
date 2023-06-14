@@ -148,11 +148,22 @@ class LimeSurveyXBlock(XBlock):
 
         return response.get("result").get("token")
 
-    def add_participant_to_survey(self, user, anonymous_user_id):
+    def add_participant_to_survey(self, user, anonymous_user_id: str):
         """
         Add the student as participant to specified survey.
+
+        args:
+            user: The user to add as participant
+            anonymous_user_id: The anonymous user id of the user
         """
-        firstname, lastname = user.profile.name.split()
+        firstname, lastname = None, None
+
+        if user.profile.name is not None:
+            fullname = user.profile.name.split()
+            if len(fullname) > 1:
+                firstname, lastname = fullname
+            else:
+                firstname = fullname[0]
 
         participant = {
             "email": user.email,
