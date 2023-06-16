@@ -1,4 +1,5 @@
 """TO-DO: Write a description of what this XBlock is."""
+from typing import Tuple
 
 import pkg_resources
 import requests
@@ -148,11 +149,37 @@ class LimeSurveyXBlock(XBlock):
 
         return response.get("result").get("token")
 
-    def add_participant_to_survey(self, user, anonymous_user_id):
+    @staticmethod
+    def get_fullname(user) -> Tuple[str, str]:
+        """
+        Return the full name of the user.
+
+        args:
+            user: The user to get the fullname
+
+        returns:
+            A tuple containing the first name and last name of the user
+        """
+        first_name, last_name = "", ""
+
+        if user.profile.name:
+            fullname = user.profile.name.split(" ", 1)
+            first_name = fullname[0]
+
+            if fullname[1:]:
+                last_name = fullname[1]
+
+        return first_name, last_name
+
+    def add_participant_to_survey(self, user, anonymous_user_id: str):
         """
         Add the student as participant to specified survey.
+
+        args:
+            user: The user to add as participant
+            anonymous_user_id: The anonymous user id of the user
         """
-        firstname, lastname = user.profile.name.split()
+        firstname, lastname = self.get_fullname(user)
 
         participant = {
             "email": user.email,
