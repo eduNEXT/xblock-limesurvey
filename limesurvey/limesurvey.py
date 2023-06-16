@@ -6,8 +6,8 @@ from django.utils import translation
 from django.conf import settings
 from xblock.core import XBlock
 from xblock.fields import Scope, String, Integer
-from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
+from web_fragments.fragment import Fragment
 
 
 class LimeSurveyXBlock(XBlock):
@@ -61,14 +61,11 @@ class LimeSurveyXBlock(XBlock):
         if context:
             pass  # TO-DO: do something based on the context.
 
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
-
-        if limesurvey_api_url:
-            anonymous_user_id = self.runtime.anonymous_student_id
-            self.add_participant_to_survey(
-                self.runtime.get_real_user(anonymous_user_id),
-                anonymous_user_id,
-            )
+        anonymous_user_id = self.runtime.anonymous_student_id
+        self.add_participant_to_survey(
+            self.runtime.get_real_user(anonymous_user_id),
+            anonymous_user_id,
+        )
 
         html = self.resource_string("static/html/limesurvey.html")
         frag = Fragment(html.format(self=self))
@@ -136,10 +133,6 @@ class LimeSurveyXBlock(XBlock):
         """
         Return the access code for the current user.
         """
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
-        if not limesurvey_api_url:
-            return False
-
         response = self._invoke(
             "get_participant_properties",
             self.survey_id,
@@ -161,9 +154,7 @@ class LimeSurveyXBlock(XBlock):
             "attribute_1": anonymous_user_id,
         }
 
-        self._invoke("add_participants", self.survey_id, [participant])
-
-        return True
+        return self._invoke("add_participants", self.survey_id, [participant])
 
     def _invoke(self, method: str, *params) -> dict:
         """
@@ -176,17 +167,17 @@ class LimeSurveyXBlock(XBlock):
         returns:
             The response from the API
         """
+        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        if not limesurvey_api_url:
+            raise Exception("LIMESURVEY_INTERNAL_API not set")
+
         payload = {
             "method": method,
             "params": [self.access_key, *params],
             "id": 1,
         }
 
-        response = requests.post(
-            settings.LIMESURVEY_INTERNAL_API,
-            json=payload,
-            timeout=1,
-        )
+        response = requests.post(url=limesurvey_api_url, json=payload, timeout=1)
 
         if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
