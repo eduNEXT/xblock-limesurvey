@@ -1,13 +1,15 @@
 """TO-DO: Write a description of what this XBlock is."""
+from typing import Tuple
 
 import pkg_resources
 import requests
 from django.utils import translation
 from django.conf import settings
+from django.template import Template, Context
 from xblock.core import XBlock
 from xblock.fields import Scope, String, Integer
-from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
+from web_fragments.fragment import Fragment
 
 
 class LimeSurveyXBlock(XBlock):
@@ -53,6 +55,39 @@ class LimeSurveyXBlock(XBlock):
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
+    def render_template(self, template_path, context=None) -> str:
+        """Render the template with the provided context.
+        
+        args:
+            template_path: The path to the template
+            context: The context to render in the template
+            
+        returns:
+            The rendered template
+        """
+        template_str = self.resource_string(template_path)
+        template = Template(template_str)
+        return template.render(Context(context))
+
+    @property
+    def in_studio_preview(self) -> bool:
+        """
+        Check whether we are in Studio preview mode.
+        
+        returns:
+            True if we are in Studio preview mode, False otherwise
+        """
+        return self.scope_ids.user_id is None
+
+    @property
+    def is_course_staff(self) -> bool:
+        """
+        Check whether the user has course staff permissions for this XBlock.
+        """
+        if hasattr(self, "runtime"):
+            return getattr(self.runtime, "user_is_staff", False)
+        return False
+
     # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
         """
@@ -61,9 +96,9 @@ class LimeSurveyXBlock(XBlock):
         if context:
             pass  # TO-DO: do something based on the context.
 
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        in_studio_preview = self.is_course_staff and not self.in_studio_preview
 
-        if limesurvey_api_url:
+        if in_studio_preview:
             anonymous_user_id = self.runtime.anonymous_student_id
             if not self.user_in_survey(anonymous_user_id):
                 self.add_participant_to_survey(
@@ -71,8 +106,9 @@ class LimeSurveyXBlock(XBlock):
                     anonymous_user_id,
                 )
 
-        html = self.resource_string("static/html/limesurvey.html")
-        frag = Fragment(html.format(self=self))
+        context = {"self": self, "show_survey": in_studio_preview}
+        html = self.render_template("static/html/limesurvey.html", context)
+        frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
         # Add i18n js
@@ -119,7 +155,7 @@ class LimeSurveyXBlock(XBlock):
         }
 
     @XBlock.json_handler
-    def get_survey(self, data, suffix=""): # pylint: disable=unused-argument
+    def get_survey(self, data, suffix="") -> dict: # pylint: disable=unused-argument
         """
         Return the survey URL and access code for the user.
         """
@@ -149,48 +185,65 @@ class LimeSurveyXBlock(XBlock):
 
         """
         params = [
-            self.survey_id, 0, 1, False, ["attribute_1"], {"attribute_1": anonymous_user_id}
+            self.survey_id, 0, 1, False, ["attribute_1"], {"attribute_1": anonymous_user_id},
         ]
 
         response = self._invoke("list_participants", *params)
 
         if isinstance(response.get("result"), list):
-            return len(response.get("result")) > 0
+            return len(response.get("result", 0)) > 0
 
         return False
 
-    def get_student_access_code(self, anonymous_user_id):
+    def get_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
+        
+        args:
+            anonymous_user_id: The anonymous user ID of the user
+            
+        returns:
+            The access code for the user
         """
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
-        if not limesurvey_api_url:
-            return False
-
         response = self._invoke(
             "get_participant_properties",
             self.survey_id,
             {"attribute_1": anonymous_user_id}
         )
 
-        return response.get("result").get("token")
+        return response.get("result", {}).get("token", "")
+
+    @staticmethod
+    def get_fullname(user) -> Tuple[str, str]:
+        """
+        Return the full name of the user.
+
+        args:
+            user: The user to get the fullname
+
+        returns:
+            A tuple containing the first name and last name of the user
+        """
+        first_name, last_name = "", ""
+
+        if user.profile.name:
+            fullname = user.profile.name.split(" ", 1)
+            first_name = fullname[0]
+
+            if fullname[1:]:
+                last_name = fullname[1]
+
+        return first_name, last_name
 
     def add_participant_to_survey(self, user, anonymous_user_id: str):
         """
         Add the student as participant to specified survey.
-
+        
         args:
             user: The user to add as participant
-            anonymous_user_id: The anonymous user id of the user
+            anonymous_user_id: The anonymous user ID of the user
         """
-        firstname, lastname = None, None
-
-        if user.profile.name is not None:
-            fullname = user.profile.name.split()
-            if len(fullname) > 1:
-                firstname, lastname = fullname
-            else:
-                firstname = fullname[0]
+        firstname, lastname = self.get_fullname(user)
 
         participant = {
             "email": user.email,
@@ -199,9 +252,7 @@ class LimeSurveyXBlock(XBlock):
             "attribute_1": anonymous_user_id,
         }
 
-        self._invoke("add_participants", self.survey_id, [participant])
-
-        return True
+        return self._invoke("add_participants", self.survey_id, [participant])
 
     def _invoke(self, method: str, *params) -> dict:
         """
@@ -214,17 +265,17 @@ class LimeSurveyXBlock(XBlock):
         returns:
             The response from the API
         """
+        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        if not limesurvey_api_url:
+            raise Exception("LIMESURVEY_INTERNAL_API not set")
+
         payload = {
             "method": method,
             "params": [self.access_key, *params],
             "id": 1,
         }
 
-        response = requests.post(
-            settings.LIMESURVEY_INTERNAL_API,
-            json=payload,
-            timeout=1,
-        )
+        response = requests.post(url=limesurvey_api_url, json=payload, timeout=1)
 
         if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
