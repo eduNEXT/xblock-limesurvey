@@ -177,13 +177,20 @@ class LimeSurveyXBlock(XBlock):
     def user_in_survey(self, anonymous_user_id: str) -> bool:
         """
         Check if the user is already in the survey.
+        - `params` variable is a list of parameters to pass to the API call.
+            - params[0]: Survey ID
+            - params[1]: Retrieve participants starting from this index
+            - params[2]: Maximum number of participants to retrieve
+            - params[3]: Retrieve only participants with unused tokens
+            - params[4]: List with extra participant attributes to retrieve
+            - params[5]: Dictionary of conditions to filter participants
 
-        Args:
+        args:
             anonymous_user_id (str): The anonymous user ID
+
         """
         params = [
-            self.survey_id, 0, 1, False,
-            ["attribute_1"], {"attribute_1": anonymous_user_id}
+            self.survey_id, 0, 1, False, ["attribute_1"], {"attribute_1": anonymous_user_id}
         ]
 
         response = self._invoke("list_participants", *params)
