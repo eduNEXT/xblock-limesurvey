@@ -1,5 +1,9 @@
-<div class="limesurvey_block">
-    <iframe class="survey-iframe" src="{self.survey_url}?token={self.access_code}" frameborder="0" width="960"
-        height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true">
-    </iframe>
+{% if show_survey %}
+<div class="limesurvey-xblock-wrapper">
+    <iframe class="survey-iframe" src="{{ self.survey_url }}?token={{ self.access_code }}" frameborder="0"></iframe>
 </div>
+{% else %}
+<div>
+    <p>The survey is only visible from the LMS.</p>
+</div>
+{% endif %}
