@@ -115,7 +115,7 @@ class LimeSurveyXBlock(XBlock):
         }
 
     @XBlock.json_handler
-    def get_survey(self, data, suffix=""): # pylint: disable=unused-argument
+    def get_survey(self, data, suffix="") -> dict: # pylint: disable=unused-argument
         """
         Return the survey URL and access code for the user.
         """
@@ -129,9 +129,15 @@ class LimeSurveyXBlock(XBlock):
             "access_code": self.access_code,
         }
 
-    def get_student_access_code(self, anonymous_user_id):
+    def get_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
+        
+        args:
+            anonymous_user_id: The anonymous user ID of the user
+            
+        returns:
+            The access code for the user
         """
         response = self._invoke(
             "get_participant_properties",
@@ -144,6 +150,10 @@ class LimeSurveyXBlock(XBlock):
     def add_participant_to_survey(self, user, anonymous_user_id):
         """
         Add the student as participant to specified survey.
+        
+        args:
+            user: The user to add as participant
+            anonymous_user_id: The anonymous user ID of the user
         """
         firstname, lastname = user.profile.name.split()
 
