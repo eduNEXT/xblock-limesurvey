@@ -13,7 +13,7 @@ LIMESURVEY_BLOCK_CATEGORY = "limesurvey"
 class AddInstructorLimesurveyTab(PipelineStep):
     """Add LimeSurvey tab to instructor dashboard."""
 
-    def run_filter(self, context, _):
+    def run_filter(self, context, template_name):  # pylint: disable=unused-argument
         """Execute filter that modifies the instructor dashboard context.
 
         Args:
