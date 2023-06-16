@@ -5,6 +5,7 @@ import pkg_resources
 import requests
 from django.utils import translation
 from django.conf import settings
+from django.template import Template, Context
 from xblock.core import XBlock
 from xblock.fields import Scope, String, Integer
 from xblockutils.resources import ResourceLoader
@@ -54,6 +55,39 @@ class LimeSurveyXBlock(XBlock):
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
+    def render_template(self, template_path, context=None) -> str:
+        """Render the template with the provided context.
+        
+        args:
+            template_path: The path to the template
+            context: The context to render in the template
+            
+        returns:
+            The rendered template
+        """
+        template_str = self.resource_string(template_path)
+        template = Template(template_str)
+        return template.render(Context(context))
+
+    @property
+    def in_studio_preview(self) -> bool:
+        """
+        Check whether we are in Studio preview mode.
+        
+        returns:
+            True if we are in Studio preview mode, False otherwise
+        """
+        return self.scope_ids.user_id is None
+
+    @property
+    def is_course_staff(self) -> bool:
+        """
+        Check whether the user has course staff permissions for this XBlock.
+        """
+        if hasattr(self, "runtime"):
+            return getattr(self.runtime, "user_is_staff", False)
+        return False
+
     # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
         """
@@ -62,14 +96,18 @@ class LimeSurveyXBlock(XBlock):
         if context:
             pass  # TO-DO: do something based on the context.
 
-        anonymous_user_id = self.runtime.anonymous_student_id
-        self.add_participant_to_survey(
-            self.runtime.get_real_user(anonymous_user_id),
-            anonymous_user_id,
-        )
+        in_studio_preview = self.is_course_staff and not self.in_studio_preview
 
-        html = self.resource_string("static/html/limesurvey.html")
-        frag = Fragment(html.format(self=self))
+        if in_studio_preview:
+            anonymous_user_id = self.runtime.anonymous_student_id
+            self.add_participant_to_survey(
+                self.runtime.get_real_user(anonymous_user_id),
+                anonymous_user_id,
+            )
+
+        context = {"self": self, "show_survey": in_studio_preview}
+        html = self.render_template("static/html/limesurvey.html", context)
+        frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
         # Add i18n js

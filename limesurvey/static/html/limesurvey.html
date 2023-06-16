@@ -1,8 +1,12 @@
 <div class="limesurvey-block">
-    <p>Survey URL: <a href="{self.survey_url}" class="survey-url">{self.survey_url}</a></p>
-    <p>Access Code: <span class="access-code">{self.access_code}</span></p>
+    {% if show_survey %}
+    <p>Survey URL: <a href="{{ self.survey_url }}" class="survey-url">{{ self.survey_url }}</a></p>
+    <p>Access Code: <span class="access-code">{{ self.access_code }}</span></p>
     <button class="button action-primary get-survey-button">Get Survey</button>
     <div class="limesurvey-xblock-wrapper">
-        <iframe class="survey-iframe" src="{self.survey_url}" frameborder="0"></iframe>
+        <iframe class="survey-iframe" src="{{ self.survey_url }}" frameborder="0"></iframe>
     </div>
+    {% else %}
+    <p>The survey is only visible from the LMS.</p>
+    {% endif %}
 </div>
