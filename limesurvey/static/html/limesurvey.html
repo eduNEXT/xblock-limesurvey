@@ -1,5 +1,9 @@
 <div class="limesurvey_block">
+    { % if self.error_message %}
+    <p>{self.error_message}</p>
+    { % else %}
     <iframe class="survey-iframe" src="{self.survey_url}?token={self.access_code}" frameborder="0" width="960"
         height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true">
     </iframe>
+    { % endif %}
 </div>
