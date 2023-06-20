@@ -190,12 +190,8 @@ class LimeSurveyXBlock(XBlock):
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
         html = self.resource_string("static/html/instructor.html")
-        frag = Fragment(
-            html.format(
-                message="Hello instructor!",
-            ),
-        )
-        frag.add_css(self.resource_string("static/css/limesurvey.css"))
+        frag = Fragment(html.format(limesurvey_url=settings.LIMESURVEY_URL))
+        frag.add_css(self.resource_string("static/css/instructor.css"))
 
         # Add i18n js
         statici18n_js_url = self._get_statici18n_js_url()
