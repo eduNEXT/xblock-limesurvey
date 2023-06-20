@@ -102,16 +102,16 @@ class LimeSurveyXBlock(XBlock):
         if context:
             pass  # TO-DO: do something based on the context.
 
-        in_studio_preview = self.is_course_staff and not self.in_studio_preview
+        show_survey = self.is_course_staff and not self.in_studio_preview
 
-        if in_studio_preview:
+        if show_survey:
             anonymous_user_id = self.runtime.anonymous_student_id
             self.add_participant_to_survey(
                 self.runtime.get_real_user(anonymous_user_id),
                 anonymous_user_id,
             )
 
-        context = {"self": self, "show_survey": in_studio_preview}
+        context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
