@@ -50,6 +50,12 @@ class LimeSurveyXBlock(XBlock):
         help="The access code of the user for the survey",
     )
 
+    timeout = Integer(
+        default=5,
+        scope=Scope.settings,
+        help="Timeout for LimeSurvey API requests",
+    )
+
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -126,7 +132,10 @@ class LimeSurveyXBlock(XBlock):
         html = self.resource_string("static/html/limesurvey_edit.html")
         frag = Fragment(
             html.format(
-                access_key=self.access_key, survey_id=self.survey_id, display_name=self.display_name,
+                access_key=self.access_key,
+                survey_id=self.survey_id,
+                display_name=self.display_name,
+                timeout=self.timeout,
             ),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -148,6 +157,7 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
+        self.timeout = data.get("timeout")
 
         return {
             "result": "success",
@@ -248,7 +258,9 @@ class LimeSurveyXBlock(XBlock):
             "id": 1,
         }
 
-        response = requests.post(url=limesurvey_api_url, json=payload, timeout=1)
+        response = requests.post(
+            url=limesurvey_api_url, json=payload, timeout=self.timeout
+        )
 
         if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
