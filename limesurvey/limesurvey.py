@@ -12,6 +12,7 @@ from xblockutils.resources import ResourceLoader
 from web_fragments.fragment import Fragment
 
 
+@XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
     TO-DO: document what your XBlock does.
@@ -63,11 +64,11 @@ class LimeSurveyXBlock(XBlock):
 
     def render_template(self, template_path, context=None) -> str:
         """Render the template with the provided context.
-        
+
         args:
             template_path: The path to the template
             context: The context to render in the template
-            
+
         returns:
             The rendered template
         """
@@ -75,41 +76,35 @@ class LimeSurveyXBlock(XBlock):
         template = Template(template_str)
         return template.render(Context(context))
 
-    @property
-    def in_studio_preview(self) -> bool:
-        """
-        Check whether we are in Studio preview mode.
-        
-        returns:
-            True if we are in Studio preview mode, False otherwise
-        """
-        return self.scope_ids.user_id is None
-
-    @property
-    def is_course_staff(self) -> bool:
+    def user_is_staff(self, user) -> bool:
         """
         Check whether the user has course staff permissions for this XBlock.
         """
-        if hasattr(self, "runtime"):
-            return getattr(self.runtime, "user_is_staff", False)
-        return False
+        return user.opt_attrs.get("edx-platform.user_is_staff")
 
-    # TO-DO: change this view to display your data your own way.
+    def is_student(self, user) -> bool:
+        """
+        Check if the user is a student.
+        """
+        return user.opt_attrs.get("edx-platform.user_role") == "student"
+
+    def anonymous_user_id(self, user) -> str:
+        """
+        Return the anonymous user ID of the user.
+        """
+        return user.opt_attrs.get("edx-platform.anonymous_user_id")
+
     def student_view(self, context=None):
         """
         Render the primary view of the LimeSurveyXBlock, shown to students when viewing courses.
         """
-        if context:
-            pass  # TO-DO: do something based on the context.
-
-        show_survey = self.is_course_staff and not self.in_studio_preview
+        user_service = self.runtime.service(self, "user")
+        user = user_service.get_current_user()
+        show_survey = self.is_student(user) or self.user_is_staff(user)
 
         if show_survey:
-            anonymous_user_id = self.runtime.anonymous_student_id
-            self.add_participant_to_survey(
-                self.runtime.get_real_user(anonymous_user_id),
-                anonymous_user_id,
-            )
+            anonymous_user_id = self.anonymous_user_id(user)
+            self.add_participant_to_survey(user, anonymous_user_id)
 
         context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
@@ -181,10 +176,10 @@ class LimeSurveyXBlock(XBlock):
     def get_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
-        
+
         args:
             anonymous_user_id: The anonymous user ID of the user
-            
+
         returns:
             The access code for the user
         """
@@ -209,8 +204,8 @@ class LimeSurveyXBlock(XBlock):
         """
         first_name, last_name = "", ""
 
-        if user.profile.name:
-            fullname = user.profile.name.split(" ", 1)
+        if user.full_name:
+            fullname = user.full_name.split(" ", 1)
             first_name = fullname[0]
 
             if fullname[1:]:
@@ -221,7 +216,7 @@ class LimeSurveyXBlock(XBlock):
     def add_participant_to_survey(self, user, anonymous_user_id: str):
         """
         Add the student as participant to specified survey.
-        
+
         args:
             user: The user to add as participant
             anonymous_user_id: The anonymous user ID of the user
@@ -229,7 +224,7 @@ class LimeSurveyXBlock(XBlock):
         firstname, lastname = self.get_fullname(user)
 
         participant = {
-            "email": user.email,
+            "email": user.emails[0],
             "lastname": lastname,
             "firstname": firstname,
             "attribute_1": anonymous_user_id,
