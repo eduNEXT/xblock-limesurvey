@@ -12,6 +12,7 @@ from xblockutils.resources import ResourceLoader
 from web_fragments.fragment import Fragment
 
 
+@XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
     TO-DO: document what your XBlock does.
@@ -50,6 +51,12 @@ class LimeSurveyXBlock(XBlock):
         help="The access code of the user for the survey",
     )
 
+    timeout = Integer(
+        default=5,
+        scope=Scope.settings,
+        help="Timeout for LimeSurvey API requests",
+    )
+
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -57,11 +64,11 @@ class LimeSurveyXBlock(XBlock):
 
     def render_template(self, template_path, context=None) -> str:
         """Render the template with the provided context.
-        
+
         args:
             template_path: The path to the template
             context: The context to render in the template
-            
+
         returns:
             The rendered template
         """
@@ -69,45 +76,39 @@ class LimeSurveyXBlock(XBlock):
         template = Template(template_str)
         return template.render(Context(context))
 
-    @property
-    def in_studio_preview(self) -> bool:
-        """
-        Check whether we are in Studio preview mode.
-        
-        returns:
-            True if we are in Studio preview mode, False otherwise
-        """
-        return self.scope_ids.user_id is None
-
-    @property
-    def is_course_staff(self) -> bool:
+    def user_is_staff(self, user) -> bool:
         """
         Check whether the user has course staff permissions for this XBlock.
         """
-        if hasattr(self, "runtime"):
-            return getattr(self.runtime, "user_is_staff", False)
-        return False
+        return user.opt_attrs.get("edx-platform.user_is_staff")
 
-    # TO-DO: change this view to display your data your own way.
+    def is_student(self, user) -> bool:
+        """
+        Check if the user is a student.
+        """
+        return user.opt_attrs.get("edx-platform.user_role") == "student"
+
+    def anonymous_user_id(self, user) -> str:
+        """
+        Return the anonymous user ID of the user.
+        """
+        return user.opt_attrs.get("edx-platform.anonymous_user_id")
+
     def student_view(self, context=None):
         """
         Render the primary view of the LimeSurveyXBlock, shown to students when viewing courses.
         """
-        if context:
-            pass  # TO-DO: do something based on the context.
+        user_service = self.runtime.service(self, "user")
+        user = user_service.get_current_user()
+        show_survey = self.is_student(user) or self.user_is_staff(user)
 
-        in_studio_preview = self.is_course_staff and not self.in_studio_preview
-
-        if in_studio_preview:
-            anonymous_user_id = self.runtime.anonymous_student_id
+        if show_survey:
+            anonymous_user_id = self.anonymous_user_id(user)
             if not self.user_in_survey(anonymous_user_id):
-                self.add_participant_to_survey(
-                    self.runtime.get_real_user(anonymous_user_id),
-                    anonymous_user_id,
-                )
+                self.add_participant_to_survey(user, anonymous_user_id)
             self.get_survey(anonymous_user_id)
 
-        context = {"self": self, "show_survey": in_studio_preview}
+        context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -131,6 +132,7 @@ class LimeSurveyXBlock(XBlock):
                 access_key=self.access_key,
                 survey_id=self.survey_id,
                 display_name=self.display_name,
+                timeout=self.timeout,
             ),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -152,6 +154,7 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
+        self.timeout = data.get("timeout")
 
         return {
             "result": "success",
@@ -160,7 +163,7 @@ class LimeSurveyXBlock(XBlock):
     def get_survey(self, anonymous_user_id: str):
         """
         Return the survey URL and access code for the user.
-        
+
         args:
             anonymous_user_id (str): The anonymous user ID of the user
         """
@@ -170,22 +173,27 @@ class LimeSurveyXBlock(XBlock):
     def user_in_survey(self, anonymous_user_id: str) -> bool:
         """
         Check if the user is already in the survey.
-        - `params` variable is a list of parameters to pass to the API call.
-            - params[0]: Survey ID
-            - params[1]: Retrieve participants starting from this index
-            - params[2]: Maximum number of participants to retrieve
-            - params[3]: Retrieve only participants with unused tokens
-            - params[4]: List with extra participant attributes to retrieve
-            - params[5]: Dictionary of conditions to filter participants
+        - `params` variable is a dict of parameters to pass to the API call.
+            - survey_id: The ID of the survey
+            - start: Retrieve participants starting from this index
+            - limit: Maximum number of participants to retrieve
+            - unused: Retrieve only participants with unused tokens
+            - attributes: List with extra participant attributes to retrieve
+            - conditions: Dictionary of conditions to filter participants
 
         Args:
             anonymous_user_id (str): The anonymous user ID of the user
         """
-        params = [
-            self.survey_id, 0, 1, False, ["attribute_1"], {"attribute_1": anonymous_user_id},
-        ]
+        params = {
+            "survey_id": self.survey_id,
+            "start": 0,
+            "limit": 1,
+            "unused": False,
+            "attributes": ["attribute_1"],
+            "conditions": {"attribute_1": anonymous_user_id},
+        }
 
-        response = self._invoke("list_participants", *params)
+        response = self._invoke("list_participants", *params.values())
 
         if isinstance(response.get("result"), list):
             return len(response.get("result", 0)) > 0
@@ -195,10 +203,10 @@ class LimeSurveyXBlock(XBlock):
     def get_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
-        
+
         args:
             anonymous_user_id: The anonymous user ID of the user
-            
+
         returns:
             The access code for the user
         """
@@ -223,8 +231,8 @@ class LimeSurveyXBlock(XBlock):
         """
         first_name, last_name = "", ""
 
-        if user.profile.name:
-            fullname = user.profile.name.split(" ", 1)
+        if user.full_name:
+            fullname = user.full_name.split(" ", 1)
             first_name = fullname[0]
 
             if fullname[1:]:
@@ -235,7 +243,7 @@ class LimeSurveyXBlock(XBlock):
     def add_participant_to_survey(self, user, anonymous_user_id: str):
         """
         Add the student as participant to specified survey.
-        
+
         args:
             user: The user to add as participant
             anonymous_user_id (str): The anonymous user ID of the user
@@ -243,7 +251,7 @@ class LimeSurveyXBlock(XBlock):
         firstname, lastname = self.get_fullname(user)
 
         participant = {
-            "email": user.email,
+            "email": user.emails[0],
             "lastname": lastname,
             "firstname": firstname,
             "attribute_1": anonymous_user_id,
@@ -272,7 +280,9 @@ class LimeSurveyXBlock(XBlock):
             "id": 1,
         }
 
-        response = requests.post(url=limesurvey_api_url, json=payload, timeout=1)
+        response = requests.post(
+            url=limesurvey_api_url, json=payload, timeout=self.timeout
+        )
 
         if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
             raise Exception(response.text)
