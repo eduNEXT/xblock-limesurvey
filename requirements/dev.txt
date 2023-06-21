@@ -80,6 +80,7 @@ django==3.2.19
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
     #   django-appconf
+    #   django-crum
     #   django-statici18n
     #   edx-i18n-tools
     #   openedx-filters
@@ -87,6 +88,8 @@ django-appconf==1.0.5
     # via
     #   -r requirements/quality.txt
     #   django-statici18n
+django-crum==0.7.9
+    # via -r requirements/quality.txt
 django-statici18n==2.3.1
     # via -r requirements/quality.txt
 docutils==0.20.1
