@@ -104,7 +104,8 @@ class LimeSurveyXBlock(XBlock):
 
         if show_survey:
             anonymous_user_id = self.anonymous_user_id(user)
-            self.add_participant_to_survey(user, anonymous_user_id)
+            if not self.user_in_survey(anonymous_user_id):
+                self.add_participant_to_survey(user, anonymous_user_id)
 
         context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
@@ -173,7 +174,37 @@ class LimeSurveyXBlock(XBlock):
             "access_code": self.access_code,
         }
 
-    def get_student_access_code(self, anonymous_user_id) -> str:
+    def user_in_survey(self, anonymous_user_id: str) -> bool:
+        """
+        Check if the user is already in the survey.
+        - `params` variable is a dict of parameters to pass to the API call.
+            - survey_id: The ID of the survey
+            - start: Retrieve participants starting from this index
+            - limit: Maximum number of participants to retrieve
+            - unused: Retrieve only participants with unused tokens
+            - attributes: List with extra participant attributes to retrieve
+            - conditions: Dictionary of conditions to filter participants
+
+        args:
+            anonymous_user_id (str): The anonymous user ID
+        """
+        params = {
+            "survey_id": self.survey_id,
+            "start": 0,
+            "limit": 1,
+            "unused": False,
+            "attributes": ["attribute_1"],
+            "conditions": {"attribute_1": anonymous_user_id},
+        }
+
+        response = self._invoke("list_participants", *params.values())
+
+        if isinstance(response.get("result"), list):
+            return len(response.get("result")) > 0
+
+        return False
+
+    def get_student_access_code(self, anonymous_user_id):
         """
         Return the access code for the current user.
 
