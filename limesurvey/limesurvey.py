@@ -246,7 +246,7 @@ class LimeSurveyXBlock(XBlock):
 
         args:
             user: The user to add as participant
-            anonymous_user_id (str): The anonymous user ID of the user
+            anonymous_user_id: The anonymous user ID of the user
         """
         firstname, lastname = self.get_fullname(user)
 
@@ -264,8 +264,8 @@ class LimeSurveyXBlock(XBlock):
         Invoke a method on the LimeSurvey API.
 
         args:
-            method (str): The method to invoke
-            params (*args): The parameters to pass to the method
+            method: The method to invoke
+            params: The parameters to pass to the method
 
         returns:
             The response from the API
