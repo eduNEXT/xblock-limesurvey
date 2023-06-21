@@ -262,7 +262,7 @@ class LimeSurveyXBlock(XBlock):
 
         return response.json()
 
-    def instructor_view(self, context=None):
+    def instructor_view(self, context=None):  # pylint: disable=unused-argument
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
