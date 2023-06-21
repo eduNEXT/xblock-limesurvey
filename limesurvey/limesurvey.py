@@ -289,6 +289,27 @@ class LimeSurveyXBlock(XBlock):
 
         return response.json()
 
+    def instructor_view(self, context=None):  # pylint: disable=unused-argument
+        """
+        The studio view of the LimeSurveyXBlock, shown to instructors.
+        """
+        html = self.resource_string("static/html/instructor.html")
+        frag = Fragment(
+            html.format(
+                message="Hello instructor!",
+            ),
+        )
+        frag.add_css(self.resource_string("static/css/limesurvey.css"))
+
+        # Add i18n js
+        statici18n_js_url = self._get_statici18n_js_url()
+        if statici18n_js_url:
+            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+
+        frag.add_javascript(self.resource_string("static/js/src/instructor.js"))
+        frag.initialize_js("LimeSurveyTab")
+        return frag
+
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
     @staticmethod
