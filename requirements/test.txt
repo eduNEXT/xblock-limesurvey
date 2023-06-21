@@ -32,6 +32,7 @@ coverage[toml]==7.2.7
     #   django-appconf
     #   django-statici18n
     #   edx-i18n-tools
+    #   openedx-filters
 django-appconf==1.0.5
     # via
     #   -r requirements/base.txt
@@ -68,6 +69,8 @@ markupsafe==2.1.3
     #   jinja2
     #   mako
     #   xblock
+openedx-filters @ git+https://github.com/openedx/openedx-filters.git@MJG/instructor-tab-filters
+    # via -r requirements/base.txt
 packaging==23.1
     # via pytest
 path==16.6.0
@@ -76,13 +79,13 @@ path==16.6.0
     #   edx-i18n-tools
 pbr==5.11.1
     # via stevedore
-pluggy==1.0.0
+pluggy==1.2.0
     # via pytest
 polib==1.2.0
     # via
     #   -r requirements/base.txt
     #   edx-i18n-tools
-pytest==7.3.1
+pytest==7.3.2
     # via
     #   pytest-cov
     #   pytest-django
@@ -151,7 +154,7 @@ xblock==1.6.2
     # via
     #   -r requirements/base.txt
     #   xblock-utils
-xblock-utils==3.1.0
+xblock-utils==3.2.0
     # via -r requirements/base.txt
 
 # The following packages are considered to be unsafe in a requirements file:
