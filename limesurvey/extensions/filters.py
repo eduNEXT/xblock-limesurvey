@@ -2,10 +2,14 @@
 Open edX Filters needed for LimeSurvey integration.
 """
 from crum import get_current_request
-
-from xmodule.modulestore.django import modulestore
-from lms.djangoapps.courseware.block_render import get_block_by_usage_id
 from openedx_filters import PipelineStep
+
+try:
+    from xmodule.modulestore.django import modulestore
+    from lms.djangoapps.courseware.block_render import get_block_by_usage_id
+except ImportError:
+    modulestore = object
+    get_block_by_usage_id = object
 
 INSTRUCTOR_TEMPLATE_ABSOLUTE_PATH = "/instructor_dashboard/"
 LIMESURVEY_BLOCK_CATEGORY = "limesurvey"
@@ -13,7 +17,7 @@ LIMESURVEY_BLOCK_CATEGORY = "limesurvey"
 class AddInstructorLimesurveyTab(PipelineStep):
     """Add LimeSurvey tab to instructor dashboard."""
 
-    def run_filter(self, context, template_name):  # pylint: disable=unused-argument
+    def run_filter(self, context, template_name):  # pylint: disable=unused-argument, arguments-differ
         """Execute filter that modifies the instructor dashboard context.
 
         Args:
