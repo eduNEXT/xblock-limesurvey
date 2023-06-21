@@ -58,12 +58,6 @@ class LimeSurveyXBlock(XBlock):
         help="The error message to display to the user",
     )
 
-    timeout = Integer(
-        default=5,
-        scope=Scope.settings,
-        help="Timeout for LimeSurvey API requests",
-    )
-
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -139,7 +133,6 @@ class LimeSurveyXBlock(XBlock):
                 access_key=self.access_key,
                 survey_id=self.survey_id,
                 display_name=self.display_name,
-                timeout=self.timeout,
             ),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -161,7 +154,6 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
-        self.timeout = data.get("timeout")
 
         return {
             "result": "success",
@@ -291,7 +283,9 @@ class LimeSurveyXBlock(XBlock):
         }
 
         response = requests.post(
-            url=limesurvey_api_url, json=payload, timeout=self.timeout
+            url=limesurvey_api_url,
+            json=payload,
+            timeout=settings.LIMESURVEY_API_TIMEOUT,
         )
 
         if not response.ok:
