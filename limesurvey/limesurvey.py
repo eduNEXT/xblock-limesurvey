@@ -262,6 +262,18 @@ class LimeSurveyXBlock(XBlock):
 
         return response.json()
 
+    @XBlock.json_handler
+    def get_survey_url(self, data, suffix=''): # pylint: disable=unused-argument
+        """
+        Show the survey URL and access code to the user
+        """
+        URL = "http://limesurvey.local.overhang.io:8082"
+
+        self.survey_url = f"{URL}/{self.survey_id}"
+        self.access_code = "aMGZtTyFFVhhA0z"
+
+        return {"survey_url": self.survey_url, "access_code": self.access_code}
+
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
     @staticmethod
