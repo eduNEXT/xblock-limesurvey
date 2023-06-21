@@ -113,7 +113,7 @@ class LimeSurveyXBlock(XBlock):
             anonymous_user_id = self.anonymous_user_id(user)
             if not self.user_in_survey(anonymous_user_id):
                 self.add_participant_to_survey(user, anonymous_user_id)
-            self.get_survey(anonymous_user_id)
+            self.set_survey_info(anonymous_user_id)
 
         context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
@@ -167,9 +167,9 @@ class LimeSurveyXBlock(XBlock):
             "result": "success",
         }
 
-    def get_survey(self, anonymous_user_id: str):
+    def set_survey_info(self, anonymous_user_id: str):
         """
-        Return the survey URL and access code for the user.
+        Set current survey information like URL and current student access code for it.
 
         args:
             anonymous_user_id (str): The anonymous user ID of the user
@@ -256,7 +256,7 @@ class LimeSurveyXBlock(XBlock):
 
         args:
             user: The user to add as participant
-            anonymous_user_id (str): The anonymous user ID of the user
+            anonymous_user_id: The anonymous user ID of the user
         """
         firstname, lastname = self.get_fullname(user)
 
@@ -274,8 +274,8 @@ class LimeSurveyXBlock(XBlock):
         Invoke a method on the LimeSurvey API.
 
         args:
-            method (str): The method to invoke
-            params (*args): The parameters to pass to the method
+            method: The method to invoke
+            params: The parameters to pass to the method
 
         returns:
             The response from the API
