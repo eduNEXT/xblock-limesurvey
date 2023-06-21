@@ -2,9 +2,10 @@
 function LimeSurveyXBlock(runtime, element) {
 
     function setUrl(result) {
+        $('.access-code', element).text(result.access_code);
         $('.survey-url', element).text(result.survey_url);
         $('.survey-url', element).attr('href', result.survey_url);
-        $('.access-code', element).text(result.access_code);
+        $('.survey-iframe', element).attr('src', result.survey_url);
     }
 
     var handlerUrl = runtime.handlerUrl(element, 'get_survey');
