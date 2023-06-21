@@ -1,5 +1,5 @@
 """
-Settings for gamma dashboard pages provider.
+Settings for the LimeSurvey plugin.
 """
 from limesurvey import LIMESURVEY_ROOT_DIRECTORY
 
