@@ -1,4 +1,5 @@
-"""TO-DO: Write a description of what this XBlock is."""
+"""XBlock to embed a LimeSurvey survey in Open edX."""
+from __future__ import annotations
 from typing import Tuple
 
 import pkg_resources
@@ -15,11 +16,8 @@ from web_fragments.fragment import Fragment
 @XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
-    TO-DO: document what your XBlock does.
+    LimeSurvey XBlock provides a way to embed surveys from LimeSurvey in a course.
     """
-
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
 
     display_name = String(
         display_name="Display Name",
@@ -51,10 +49,10 @@ class LimeSurveyXBlock(XBlock):
         help="The access code of the user for the survey",
     )
 
-    timeout = Integer(
-        default=5,
-        scope=Scope.settings,
-        help="Timeout for LimeSurvey API requests",
+    error_message = String(
+        default=None,
+        scope=Scope.user_state,
+        help="The error message to display to the user",
     )
 
     def resource_string(self, path):
@@ -132,7 +130,6 @@ class LimeSurveyXBlock(XBlock):
                 access_key=self.access_key,
                 survey_id=self.survey_id,
                 display_name=self.display_name,
-                timeout=self.timeout,
             ),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -154,7 +151,6 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
-        self.timeout = data.get("timeout")
 
         return {
             "result": "success",
@@ -181,8 +177,11 @@ class LimeSurveyXBlock(XBlock):
             - attributes: List with extra participant attributes to retrieve
             - conditions: Dictionary of conditions to filter participants
 
-        Args:
+        args:
             anonymous_user_id (str): The anonymous user ID of the user
+
+        Returns:
+            bool: True if the user is in the survey, False otherwise
         """
         params = {
             "survey_id": self.survey_id,
@@ -259,7 +258,7 @@ class LimeSurveyXBlock(XBlock):
 
         return self._invoke("add_participants", self.survey_id, [participant])
 
-    def _invoke(self, method: str, *params) -> dict:
+    def _invoke(self, method: str, *params) -> dict | None:
         """
         Invoke a method on the LimeSurvey API.
 
@@ -281,13 +280,25 @@ class LimeSurveyXBlock(XBlock):
         }
 
         response = requests.post(
-            url=limesurvey_api_url, json=payload, timeout=self.timeout
+            url=limesurvey_api_url,
+            json=payload,
+            timeout=settings.LIMESURVEY_API_TIMEOUT,
         )
 
-        if response.status_code != requests.status_codes.codes.ok: # pylint: disable=no-member
-            raise Exception(response.text)
+        if not response.ok:
+            self.error_message = response.text
+            return None
 
-        return response.json()
+        json_response = response.json()
+
+        result = json_response.get("result")
+
+        if isinstance(result, dict) and result.get("status") not in ("OK", None):
+            self.error_message = json_response.get("result").get("status")
+        else:
+            self.error_message = None
+
+        return json_response
 
     def instructor_view(self, context=None):  # pylint: disable=unused-argument
         """
