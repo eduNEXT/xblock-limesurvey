@@ -286,7 +286,8 @@ class LimeSurveyXBlock(XBlock):
         )
 
         if not response.ok:
-            raise Exception(response.text)
+            self.error_message = response.text
+            return None
 
         json_response = response.json()
 
