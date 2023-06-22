@@ -5,7 +5,6 @@ function LimeSurveyXBlock(runtime, element) {
         var handlerUrl = runtime.handlerUrl(element, 'studio_submit');
         var data = {
             display_name: $(element).find('input[name=limesurvey_display_name]').val(),
-            access_key: $(element).find('input[name=limesurvey_access_key]').val(),
             survey_id: $(element).find('input[name=limesurvey_survey_id]').val(),
         };
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
