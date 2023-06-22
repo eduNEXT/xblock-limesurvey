@@ -311,7 +311,6 @@ class LimeSurveyXBlock(XBlock):
             self.set_session_key()
             # Pop session key to avoid infinite recursion
             params.pop(0)
-            return self._invoke(method, *params)
 
         if result.get("status") not in ("OK", None):
             self.error_message = json_response.get("result").get("status")
