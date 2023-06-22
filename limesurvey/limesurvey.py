@@ -106,6 +106,7 @@ class LimeSurveyXBlock(XBlock):
             anonymous_user_id = self.anonymous_user_id(user)
             if not self.user_in_survey(anonymous_user_id):
                 self.add_participant_to_survey(user, anonymous_user_id)
+            self.set_survey_info(anonymous_user_id)
 
         context = {"self": self, "show_survey": show_survey}
         html = self.render_template("static/html/limesurvey.html", context)
@@ -159,20 +160,15 @@ class LimeSurveyXBlock(XBlock):
             "result": "success",
         }
 
-    @XBlock.json_handler
-    def get_survey(self, data, suffix="") -> dict: # pylint: disable=unused-argument
+    def set_survey_info(self, anonymous_user_id: str):
         """
-        Return the survey URL and access code for the user.
+        Set current survey information like URL and current student access code for it.
+
+        args:
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
-
-        anonymous_user_id = self.runtime.anonymous_student_id
         self.access_code = self.get_student_access_code(anonymous_user_id)
-
-        return {
-            "survey_url": self.survey_url,
-            "access_code": self.access_code,
-        }
 
     def user_in_survey(self, anonymous_user_id: str) -> bool:
         """
@@ -185,8 +181,8 @@ class LimeSurveyXBlock(XBlock):
             - attributes: List with extra participant attributes to retrieve
             - conditions: Dictionary of conditions to filter participants
 
-        args:
-            anonymous_user_id (str): The anonymous user ID
+        Args:
+            anonymous_user_id (str): The anonymous user ID of the user
         """
         params = {
             "survey_id": self.survey_id,
@@ -200,11 +196,11 @@ class LimeSurveyXBlock(XBlock):
         response = self._invoke("list_participants", *params.values())
 
         if isinstance(response.get("result"), list):
-            return len(response.get("result")) > 0
+            return len(response.get("result", 0)) > 0
 
         return False
 
-    def get_student_access_code(self, anonymous_user_id):
+    def get_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
 
@@ -220,7 +216,7 @@ class LimeSurveyXBlock(XBlock):
             {"attribute_1": anonymous_user_id}
         )
 
-        return response.get("result").get("token")
+        return response.get("result", {}).get("token", "")
 
     @staticmethod
     def get_fullname(user) -> Tuple[str, str]:
