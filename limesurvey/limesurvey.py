@@ -13,6 +13,8 @@ from xblockutils.resources import ResourceLoader
 from web_fragments.fragment import Fragment
 
 
+API_SESSION_KEY_EXPIRED_MESSAGE = "Invalid session key"
+
 @XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
@@ -266,7 +268,7 @@ class LimeSurveyXBlock(XBlock):
 
         self.session_key = response.get("result")
 
-    def _invoke(self, method: str, *params, get_session_key=False) -> dict:
+    def _invoke(self, method: str, *params, get_session_key=False) -> dict | None:
         """
         Invoke a method on the LimeSurvey API.
 
@@ -299,17 +301,20 @@ class LimeSurveyXBlock(XBlock):
             return None
 
         json_response = response.json()
-
         result = json_response.get("result")
+        self.error_message = None
 
-        if isinstance(result, dict) and result.get("status") not in ("OK", None):
-            if result.get("status") == "Invalid session key":
-                self.set_session_key()
-                params.pop(0) # avoid infinite recursion
-                return self._invoke(method, *params)
+        if not isinstance(result, dict):
+            return json_response
+
+        if result.get("status") == API_SESSION_KEY_EXPIRED_MESSAGE:
+            self.set_session_key()
+            # Pop session key to avoid infinite recursion
+            params.pop(0)
+            return self._invoke(method, *params)
+
+        if result.get("status") not in ("OK", None):
             self.error_message = json_response.get("result").get("status")
-        else:
-            self.error_message = None
 
         return json_response
 
