@@ -1,4 +1,4 @@
-"""TO-DO: Write a description of what this XBlock is."""
+"""XBlock to embed a LimeSurvey survey in Open edX."""
 from __future__ import annotations
 from typing import Tuple
 
@@ -16,11 +16,8 @@ from web_fragments.fragment import Fragment
 @XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
-    TO-DO: document what your XBlock does.
+    LimeSurvey XBlock provides a way to embed surveys from LimeSurvey in a course.
     """
-
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
 
     display_name = String(
         display_name="Display Name",
