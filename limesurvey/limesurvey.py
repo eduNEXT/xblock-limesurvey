@@ -13,6 +13,8 @@ from xblockutils.resources import ResourceLoader
 from web_fragments.fragment import Fragment
 
 
+API_SESSION_KEY_EXPIRED_MESSAGE = "Invalid session key"
+
 @XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
     """
@@ -31,9 +33,9 @@ class LimeSurveyXBlock(XBlock):
         help="The ID of the survey to be embedded",
     )
 
-    access_key = String(
+    session_key = String(
         default=None,
-        scope=Scope.settings,
+        scope=Scope.user_state_summary,
         help="Authentication key for the LimeSurvey API",
     )
 
@@ -126,11 +128,7 @@ class LimeSurveyXBlock(XBlock):
         """
         html = self.resource_string("static/html/limesurvey_edit.html")
         frag = Fragment(
-            html.format(
-                access_key=self.access_key,
-                survey_id=self.survey_id,
-                display_name=self.display_name,
-            ),
+            html.format(survey_id=self.survey_id, display_name=self.display_name),
         )
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
@@ -149,7 +147,6 @@ class LimeSurveyXBlock(XBlock):
         Called when submitting the form in Studio.
         """
         self.display_name = data.get("display_name")
-        self.access_key = data.get("access_key")
         self.survey_id = data.get("survey_id")
 
         return {
@@ -258,14 +255,27 @@ class LimeSurveyXBlock(XBlock):
 
         return self._invoke("add_participants", self.survey_id, [participant])
 
-    def _invoke(self, method: str, *params) -> dict | None:
+    def set_session_key(self) -> None:
+        """
+        Set the session key for the LimeSurvey API when expires.
+        """
+        response = self._invoke(
+            "get_session_key",
+            settings.LIMESURVEY_API_USER,
+            settings.LIMESURVEY_API_PASSWORD,
+            get_session_key=True,
+        )
+
+        self.session_key = response.get("result")
+
+    def _invoke(self, method: str, *params, get_session_key=False) -> dict | None:
         """
         Invoke a method on the LimeSurvey API.
 
         args:
             method: The method to invoke
             params: The parameters to pass to the method
-
+            get_session_key: True if the method is get_session_key, False otherwise
         returns:
             The response from the API
         """
@@ -273,11 +283,12 @@ class LimeSurveyXBlock(XBlock):
         if not limesurvey_api_url:
             raise Exception("LIMESURVEY_INTERNAL_API not set")
 
-        payload = {
-            "method": method,
-            "params": [self.access_key, *params],
-            "id": 1,
-        }
+        if get_session_key:
+            params = [*params]
+        else:
+            params = [self.session_key, *params]
+
+        payload = {"method": method, "params": params, "id": 1}
 
         response = requests.post(
             url=limesurvey_api_url,
@@ -290,13 +301,20 @@ class LimeSurveyXBlock(XBlock):
             return None
 
         json_response = response.json()
-
         result = json_response.get("result")
+        self.error_message = None
 
-        if isinstance(result, dict) and result.get("status") not in ("OK", None):
+        if not isinstance(result, dict):
+            return json_response
+
+        if result.get("status") == API_SESSION_KEY_EXPIRED_MESSAGE:
+            self.set_session_key()
+            # Pop session key to avoid infinite recursion
+            params.pop(0)
+            return self._invoke(method, *params)
+
+        if result.get("status") not in ("OK", None):
             self.error_message = json_response.get("result").get("status")
-        else:
-            self.error_message = None
 
         return json_response
 
