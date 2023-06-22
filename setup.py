@@ -126,7 +126,7 @@ setup(
     author_email='technical@edunext.co',
     url='https://github.com/eduNEXT/xblock-limesurvey',
     packages=find_packages(
-        include=['limesurvey', 'limesurvey.*'],
+        include=['limesurvey', 'limesurvey.*', "*.html"],
         exclude=["*tests"],
     ),
 
