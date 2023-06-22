@@ -1,10 +1,10 @@
 """
-Settings for the LimeSurvey plugin.
+Settings for the LimeSurvey plugin for testing purposes.
 """
 
-def plugin_settings(settings):
-    """
-    Read / Update necessary project settings for testing.
-    """
-    settings.LIMESURVEY_API_USER = "admin"
-    settings.LIMESURVEY_API_PASSWORD = "admin"
+# LimeSurvey API credentials
+LIMESURVEY_API_USER = "test-user"
+LIMESURVEY_API_PASSWORD = "test-password"
+
+# LimeSurvey API timeout
+LIMESURVEY_API_TIMEOUT = 5
