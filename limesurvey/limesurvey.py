@@ -124,8 +124,8 @@ class LimeSurveyXBlock(XBlock):
         """
         self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
         self.set_session_key()
-        self.set_student_access_code(anonymous_user_id)
         self.add_participant_to_survey(user, anonymous_user_id)
+        self.set_student_access_code(anonymous_user_id)
 
     def student_view(self, show_survey):
         """
