@@ -122,9 +122,10 @@ class LimeSurveyXBlock(XBlock):
         """
         Setup LimeSurvey configurations for the student view of the XBlock.
         """
+        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
         self.set_session_key()
+        self.set_student_access_code(anonymous_user_id)
         self.add_participant_to_survey(user, anonymous_user_id)
-        self.set_survey_info(anonymous_user_id)
 
     def student_view(self, show_survey):
         """
@@ -198,8 +199,7 @@ class LimeSurveyXBlock(XBlock):
         args:
             anonymous_user_id (str): The anonymous user ID of the user
         """
-        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
-        self.access_code = self.get_student_access_code(anonymous_user_id)
+
 
     def get_survey_summary(self) -> dict:
         """
@@ -244,7 +244,7 @@ class LimeSurveyXBlock(XBlock):
 
         return False
 
-    def get_student_access_code(self, anonymous_user_id) -> str:
+    def set_student_access_code(self, anonymous_user_id) -> str:
         """
         Return the access code for the current user.
 
@@ -260,7 +260,7 @@ class LimeSurveyXBlock(XBlock):
             {"attribute_1": anonymous_user_id}
         )
 
-        return response.get("token", "")
+        self.access_code = response.get("token", "")
 
     @staticmethod
     def get_fullname(user) -> Tuple[str, str]:
