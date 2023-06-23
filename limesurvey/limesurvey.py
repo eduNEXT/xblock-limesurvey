@@ -1,19 +1,43 @@
 """XBlock to embed a LimeSurvey survey in Open edX."""
 from __future__ import annotations
+
+import uuid
+from collections import defaultdict
+from datetime import datetime, timedelta
 from typing import Tuple
 
 import pkg_resources
+import pytz
 import requests
-from django.utils import translation
 from django.conf import settings
-from django.template import Template, Context
-from xblock.core import XBlock
-from xblock.fields import Scope, String, Integer
-from xblockutils.resources import ResourceLoader
+from django.template import Context, Template
+from django.utils import translation
 from web_fragments.fragment import Fragment
+from xblock.core import XBlock
+from xblock.fields import DateTime, Integer, Scope, String
+from xblockutils.resources import ResourceLoader
 
 
-API_SESSION_KEY_EXPIRED_MESSAGE = "Invalid session key"
+class NoParticipantFound(Exception):
+    """Exception raised when no participant is found for the user."""
+
+
+class LimeSurveyAPIError(Exception):
+    """Exception raised when the LimeSurvey API returns an error."""
+
+
+class ExceededLoginAttempts(Exception):
+    """Exception raised when the user has exceeded the number of login attempts."""
+
+
+class InvalidSessionKey(Exception):
+    """Exception raised when the session key is expired."""
+
+
+API_EXCEPTIONS_MAPPING = defaultdict(lambda: LimeSurveyAPIError)
+API_EXCEPTIONS_MAPPING["Invalid session key"] = InvalidSessionKey
+API_EXCEPTIONS_MAPPING["No survey participants found."] = NoParticipantFound
+
 
 @XBlock.wants("user")
 class LimeSurveyXBlock(XBlock):
@@ -51,10 +75,10 @@ class LimeSurveyXBlock(XBlock):
         help="The access code of the user for the survey",
     )
 
-    error_message = String(
+    last_login_attempt = DateTime(
         default=None,
         scope=Scope.user_state,
-        help="The error message to display to the user",
+        help="The time of the last login attempt",
     )
 
     def resource_string(self, path):
@@ -94,21 +118,35 @@ class LimeSurveyXBlock(XBlock):
         """
         return user.opt_attrs.get("edx-platform.anonymous_user_id")
 
-    def student_view(self, context=None):
+    def setup_student_view_survey(self, user, anonymous_user_id):
+        """
+        Setup LimeSurvey configurations for the student view of the XBlock.
+        """
+        self.set_session_key()
+        self.add_participant_to_survey(user, anonymous_user_id)
+        self.set_survey_info(anonymous_user_id)
+
+    def student_view(self, show_survey):
         """
         Render the primary view of the LimeSurveyXBlock, shown to students when viewing courses.
         """
         user_service = self.runtime.service(self, "user")
         user = user_service.get_current_user()
         show_survey = self.is_student(user) or self.user_is_staff(user)
+        anonymous_user_id = self.anonymous_user_id(user)
+        error_message = None
 
         if show_survey:
-            anonymous_user_id = self.anonymous_user_id(user)
-            if not self.user_in_survey(anonymous_user_id):
-                self.add_participant_to_survey(user, anonymous_user_id)
-            self.set_survey_info(anonymous_user_id)
+            try:
+                self.setup_student_view_survey(user, anonymous_user_id)
+            except Exception as e:
+                error_message = str(e)
 
-        context = {"self": self, "show_survey": show_survey}
+        context = {
+            "self": self,
+            "show_survey": show_survey,
+            error_message: error_message,
+        }
         html = self.render_template("static/html/limesurvey.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -163,7 +201,17 @@ class LimeSurveyXBlock(XBlock):
         self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
         self.access_code = self.get_student_access_code(anonymous_user_id)
 
-    def user_in_survey(self, anonymous_user_id: str) -> bool:
+    def get_survey_summary(self) -> dict:
+        """
+        Get the summary of the current configured survey.
+        """
+        params = {
+            "survey_id": self.survey_id,
+        }
+
+        return self.call_procedure("get_summary", *params.values())
+
+    def check_user_in_survey(self, anonymous_user_id: str) -> bool:
         """
         Check if the user is already in the survey.
         - `params` variable is a dict of parameters to pass to the API call.
@@ -189,10 +237,10 @@ class LimeSurveyXBlock(XBlock):
             "conditions": {"attribute_1": anonymous_user_id},
         }
 
-        response = self._invoke("list_participants", *params.values())
+        response = self.call_procedure("list_participants", *params.values())
 
-        if isinstance(response.get("result"), list):
-            return len(response.get("result", 0)) > 0
+        if isinstance(response, list):
+            return len(response) > 0
 
         return False
 
@@ -206,13 +254,13 @@ class LimeSurveyXBlock(XBlock):
         returns:
             The access code for the user
         """
-        response = self._invoke(
+        response = self.call_procedure(
             "get_participant_properties",
             self.survey_id,
             {"attribute_1": anonymous_user_id}
         )
 
-        return response.get("result", {}).get("token", "")
+        return response.get("token", "")
 
     @staticmethod
     def get_fullname(user) -> Tuple[str, str]:
@@ -244,6 +292,12 @@ class LimeSurveyXBlock(XBlock):
             user: The user to add as participant
             anonymous_user_id: The anonymous user ID of the user
         """
+        try:
+            self.check_user_in_survey(anonymous_user_id)
+            return
+        except NoParticipantFound:
+            pass
+
         firstname, lastname = self.get_fullname(user)
 
         participant = {
@@ -253,69 +307,84 @@ class LimeSurveyXBlock(XBlock):
             "attribute_1": anonymous_user_id,
         }
 
-        return self._invoke("add_participants", self.survey_id, [participant])
+        return self.call_procedure("add_participants", self.survey_id, [participant])
 
     def set_session_key(self) -> None:
         """
         Set the session key for the LimeSurvey API when expires.
         """
-        response = self._invoke(
+        try:
+            # Check first if the current session key is still valid
+            self.get_survey_summary()
+            return
+        except InvalidSessionKey:
+            pass
+
+        current_time = datetime.now().replace(tzinfo=pytz.utc)
+        login_attempts_exceeded = self.last_login_attempt and self.last_login_attempt > current_time - timedelta(minutes=1)
+        if login_attempts_exceeded:
+            raise ExceededLoginAttempts("""Login attempts exceeded. Please wait a few minutes minutes and try again.""")
+        self.last_login_attempt = datetime.now()
+
+        session_key = self.call_procedure(
             "get_session_key",
             settings.LIMESURVEY_API_USER,
             settings.LIMESURVEY_API_PASSWORD,
             get_session_key=True,
         )
 
-        self.session_key = response.get("result")
+        if isinstance(session_key, str):
+            self.session_key = session_key
 
-    def _invoke(self, method: str, *params, get_session_key=False) -> dict | None:
+    def call_procedure(self, method: str, *params, get_session_key=False) -> dict | None:
         """
         Invoke a method on the LimeSurvey API.
 
-        args:
+        Arguments:
             method: The method to invoke
             params: The parameters to pass to the method
             get_session_key: True if the method is get_session_key, False otherwise
-        returns:
-            The response from the API
+
+        Returns:
+            The response from the API.
+
+        Raises:
+            LimeSurveyAPIError: If the API call fails.
+            An exception from API_EXCEPTIONS_MAPPING if matches the error message.
         """
         limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
         if not limesurvey_api_url:
-            raise Exception("LIMESURVEY_INTERNAL_API not set")
+            raise LimeSurveyAPIError("LIMESURVEY_INTERNAL_API not set")
 
         if get_session_key:
             params = [*params]
         else:
             params = [self.session_key, *params]
 
-        payload = {"method": method, "params": params, "id": 1}
+        payload = {
+            "method": method,
+            "params": params,
+            "id": uuid.uuid4().hex,
+        }
 
         response = requests.post(
             url=limesurvey_api_url,
             json=payload,
-            timeout=settings.LIMESURVEY_API_TIMEOUT,
+            timeout=getattr(settings, "LIMESURVEY_API_TIMEOUT", 5),
         )
 
         if not response.ok:
-            self.error_message = response.text
-            return None
+            raise LimeSurveyAPIError(response.text)
 
-        json_response = response.json()
-        result = json_response.get("result")
-        self.error_message = None
+        result = response.json().get("result")
 
         if not isinstance(result, dict):
-            return json_response
-
-        if result.get("status") == API_SESSION_KEY_EXPIRED_MESSAGE:
-            self.set_session_key()
-            # Pop session key to avoid infinite recursion
-            params.pop(0)
+            return result
 
         if result.get("status") not in ("OK", None):
-            self.error_message = json_response.get("result").get("status")
+            raise API_EXCEPTIONS_MAPPING[result.get("status")]
 
-        return json_response
+        return result
 
     def instructor_view(self, _context=None):
         """
