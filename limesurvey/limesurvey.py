@@ -145,7 +145,7 @@ class LimeSurveyXBlock(XBlock):
         context = {
             "self": self,
             "show_survey": show_survey,
-            error_message: error_message,
+            "error_message": error_message,
         }
         html = self.render_template("static/html/limesurvey.html", context)
         frag = Fragment(html)
