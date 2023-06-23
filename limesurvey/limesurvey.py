@@ -122,14 +122,13 @@ class LimeSurveyXBlock(XBlock):
         frag.initialize_js("LimeSurveyXBlock")
         return frag
 
-    def studio_view(self, _context=None):
+    def studio_view(self, context=None):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        html = self.resource_string("static/html/limesurvey_edit.html")
-        frag = Fragment(
-            html.format(survey_id=self.survey_id, display_name=self.display_name),
-        )
+        context = {"survey_id": self.survey_id, "display_name": self.display_name}
+        html = self.render_template("static/html/limesurvey_edit.html", context)
+        frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
         # Add i18n js
@@ -318,12 +317,13 @@ class LimeSurveyXBlock(XBlock):
 
         return json_response
 
-    def instructor_view(self, _context=None):
+    def instructor_view(self, context=None):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        html = self.resource_string("static/html/instructor.html")
-        frag = Fragment(html.format(limesurvey_url=settings.LIMESURVEY_URL))
+        context = {"limesurvey_url": getattr(settings, "LIMESURVEY_URL", None)}
+        html = self.render_template("static/html/instructor.html", context)
+        frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/instructor.css"))
 
         # Add i18n js
