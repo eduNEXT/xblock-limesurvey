@@ -42,6 +42,24 @@ From the LimeSurvey administrator you must enable the use of the API:
 3. Enable ``JSON-RPC`` in RPC interface enabled.
 4. Save changes.
 
+Next, you must create a user with API access:
+
+1. Navigate to Configuration → Users management → Add user.
+2. Fill the form with the desired information. Doesn't set and Expire date/time y set a custom password.
+3. Select the permissions to the user.
+
+   - For the ``Surveys`` permission add permissions to ``View/read`` and ``Update``.
+   - Preserve the ``Use internal database authentication`` permission.
+
+   Please, select only the permissions that are necessary, to avoid any unwanted modifications.
+4. Save changes.
+5. Edit the user and password in the common settings (``limesurvey/settings/common.py``)
+
+   .. code:: python
+
+       settings.LIMESURVEY_API_USER=<user>
+       settings.LIMESURVEY_API_PASSWORD=<password>
+
 Enabling in Studio
 ******************
 
