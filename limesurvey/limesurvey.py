@@ -140,7 +140,7 @@ class LimeSurveyXBlock(XBlock):
         if show_survey:
             try:
                 self.setup_student_view_survey(user, anonymous_user_id)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-except
                 error_message = str(e)
 
         context = {
@@ -294,7 +294,7 @@ class LimeSurveyXBlock(XBlock):
         """
         try:
             self.check_user_in_survey(anonymous_user_id)
-            return
+            return None
         except NoParticipantFound:
             pass
 
@@ -321,7 +321,8 @@ class LimeSurveyXBlock(XBlock):
             pass
 
         current_time = datetime.now().replace(tzinfo=pytz.utc)
-        login_attempts_exceeded = self.last_login_attempt and self.last_login_attempt > current_time - timedelta(minutes=1)
+        login_attempts_exceeded = self.last_login_attempt and \
+        self.last_login_attempt > current_time - timedelta(minutes=1)
         if login_attempts_exceeded:
             raise ExceededLoginAttempts("""Login attempts exceeded. Please wait a few minutes minutes and try again.""")
         self.last_login_attempt = datetime.now()
