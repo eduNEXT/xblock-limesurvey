@@ -236,15 +236,6 @@ class LimeSurveyXBlock(XBlock):
             "result": "success",
         }
 
-    def set_survey_info(self, anonymous_user_id: str):
-        """
-        Set current survey information like URL and current student access code for it.
-
-        args:
-            anonymous_user_id (str): The anonymous user ID of the user
-        """
-
-
     def get_survey_summary(self) -> dict:
         """
         Get the summary of the current configured survey.
