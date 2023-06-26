@@ -1,8 +1,8 @@
 {% if show_survey %}
 <div class="limesurvey-xblock-wrapper">
-    {% if self.error_message %}
-    <p>The survey can't be rendered due to the following error: <b>{{self.error_message}}</b></p>
-    <p>Please contact the instructor.</p>
+    {% if error_message %}
+    <p>The survey can't be rendered due to the following error: <b>{{error_message}}</b></p>
+    <p>Please contact the instructor or an administrator.</p>
     {% else %}
     <iframe class="survey-iframe" src="{{ self.survey_url }}?token={{ self.access_code }}" frameborder="0"></iframe>
     {% endif %}
