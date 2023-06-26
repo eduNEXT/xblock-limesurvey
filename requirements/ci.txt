@@ -36,7 +36,7 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-keyring==24.0.0
+keyring==24.1.0
     # via twine
 markdown-it-py==3.0.0
     # via rich
@@ -48,7 +48,7 @@ packaging==23.1
     # via tox
 pkginfo==1.9.6
     # via twine
-platformdirs==3.7.0
+platformdirs==3.8.0
     # via virtualenv
 pluggy==1.2.0
     # via tox
