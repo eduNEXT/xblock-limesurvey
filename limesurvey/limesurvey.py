@@ -17,26 +17,70 @@ from xblock.core import XBlock
 from xblock.fields import DateTime, Integer, Scope, String
 from xblockutils.resources import ResourceLoader
 
-
-class NoParticipantFound(Exception):
-    """Exception raised when no participant is found for the user."""
-
-
 class LimeSurveyAPIError(Exception):
     """Exception raised when the LimeSurvey API returns an error."""
 
+    def __init__(self, message="LimeSurvey API error."):
+        """Initialize the exception.
 
-class ExceededLoginAttempts(Exception):
+        args:
+            message: The error message for the LimeSurvey API error.
+        """
+        super().__init__(message)
+
+class NoParticipantFound(LimeSurveyAPIError):
+    """Exception raised when no participant is found for the user."""
+
+    def __init__(self, message="No participant in the survey."):
+        """Initialize the exception.
+
+        args:
+            message: The error message for the no participant error.
+        """
+        super().__init__(message)
+
+
+class ExceededLoginAttempts(LimeSurveyAPIError):
     """Exception raised when the user has exceeded the number of login attempts."""
 
+    def __init__(self, message="Exceeded the number of login attempts."):
+        """Initialize the exception.
 
-class InvalidSessionKey(Exception):
+        args:
+            message: The error message for the exceeded login attempts error.
+        """
+        super().__init__(message)
+
+
+class InvalidSessionKey(LimeSurveyAPIError):
     """Exception raised when the session key is expired."""
+
+    def __init__(self, message="Invalid session key."):
+        """Initialize the exception.
+
+        args:
+            message: The error message for the invalid session key error.
+        """
+        super().__init__(message)
+
+
+
+class InvalidCredentials(LimeSurveyAPIError):
+    """Exception raised when the credentials are invalid."""
+
+    def __init__(self, message="Invalid credentials to authenticate with LimeSurvey API."):
+        """Initialize the exception.
+
+        args:
+            message: The error message for the invalid credentials error.
+        """
+        super().__init__(message)
 
 
 API_EXCEPTIONS_MAPPING = defaultdict(lambda: LimeSurveyAPIError)
 API_EXCEPTIONS_MAPPING["Invalid session key"] = InvalidSessionKey
 API_EXCEPTIONS_MAPPING["No survey participants found."] = NoParticipantFound
+API_EXCEPTIONS_MAPPING["Invalid user name or password"] = InvalidCredentials
 
 
 @XBlock.wants("user")
@@ -322,9 +366,9 @@ class LimeSurveyXBlock(XBlock):
 
         current_time = datetime.now().replace(tzinfo=pytz.utc)
         login_attempts_exceeded = self.last_login_attempt and \
-        self.last_login_attempt > current_time - timedelta(minutes=1)
+        self.last_login_attempt > current_time - timedelta(minutes=getattr(settings, "LIMESURVEY_LOGIN_ATTEMPTS_TIMEOUT", 5))
         if login_attempts_exceeded:
-            raise ExceededLoginAttempts("""Login attempts exceeded. Please wait a few minutes minutes and try again.""")
+            raise ExceededLoginAttempts
         self.last_login_attempt = datetime.now()
 
         session_key = self.call_procedure(
