@@ -357,7 +357,11 @@ class LimeSurveyXBlock(XBlock):
 
         current_time = datetime.now().replace(tzinfo=pytz.utc)
         login_attempts_exceeded = self.last_login_attempt and \
-        self.last_login_attempt > current_time - timedelta(minutes=getattr(settings, "LIMESURVEY_LOGIN_ATTEMPTS_TIMEOUT", 5))
+        self.last_login_attempt > current_time - timedelta(
+            minutes=getattr(
+                settings, "LIMESURVEY_LOGIN_ATTEMPTS_TIMEOUT", 5,
+            )
+        )
         if login_attempts_exceeded:
             raise ExceededLoginAttempts
         self.last_login_attempt = datetime.now()
