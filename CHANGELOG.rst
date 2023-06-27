@@ -16,10 +16,19 @@ Unreleased
 
 *
 
+0.2.0 – 2023-06-26
+**********************************************
+
+Added
+=====
+
+* Studio view handler for instructors to configure limesurvey as an Iframe.
+* Student interaction with survey from the LMS with API callings and Iframe integration.
+
 0.1.0 – 2023-05-31
 **********************************************
 
 Added
 =====
 
-* First release on PyPI.
+* First release.
