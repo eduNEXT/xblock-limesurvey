@@ -29,7 +29,14 @@ class AddInstructorLimesurveyTab(PipelineStep):
         limesurvey_blocks = modulestore().get_items(
             course.id, qualifiers={"category": LIMESURVEY_BLOCK_CATEGORY}
         )
-        limesurvey_block = limesurvey_blocks[0]
+        limesurvey_block = None
+        if len(limesurvey_blocks) > 0:
+            limesurvey_block = limesurvey_blocks[0]
+
+        # Return if there is no LimeSurvey block in the course
+        if not limesurvey_block:
+            return context
+
         block, __ = get_block_by_usage_id(
             request, str(course.id), str(limesurvey_block.location),
             disable_staff_debug_info=True, course=course
