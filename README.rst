@@ -33,11 +33,11 @@ For details regarding how to deploy this or any other XBlock in the lms instance
 
 .. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
-Setup LimeSurvey
-****************
+Set up LimeSurvey
+*****************
 From the LimeSurvey administrator you must enable the use of the API:
 
-1. Login in the LimeSurvey admin → ``limesurvey.local.overhang.io/admin``
+1. Login in the LimeSurvey admin → ``<LIMESURVEY_DOMAIN>/admin``
 2. Navigate to Configuration → Settings → Global → Interfaces.
 3. Enable ``JSON-RPC`` in RPC interface enabled.
 4. Save changes.
@@ -45,7 +45,7 @@ From the LimeSurvey administrator you must enable the use of the API:
 Next, you must create a user with API access:
 
 1. Navigate to Configuration → Users management → Add user.
-2. Fill the form with the desired information. Doesn't set and Expire date/time y set a custom password.
+2. Fill the form with the desired information. Doesn't set and Expire date/time and set a custom password.
 3. Select the permissions to the user.
 
    - For the ``Surveys`` permission add permissions to ``View/read`` and ``Update``.
@@ -53,12 +53,12 @@ Next, you must create a user with API access:
 
    Please, select only the permissions that are necessary, to avoid any unwanted modifications.
 4. Save changes.
-5. Edit the user and password in the common settings (``limesurvey/settings/common.py``)
+5. Add your authentication configuration to your LMS settings.
 
    .. code:: python
 
-       settings.LIMESURVEY_API_USER=<user>
-       settings.LIMESURVEY_API_PASSWORD=<password>
+       LIMESURVEY_API_USER = "<username>"
+       LIMESURVEY_API_PASSWORD = "<password>"
 
 Enabling in Studio
 ******************
