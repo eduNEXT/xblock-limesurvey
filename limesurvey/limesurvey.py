@@ -1,6 +1,7 @@
 """XBlock to embed a LimeSurvey survey in Open edX."""
 from __future__ import annotations
 
+import logging
 import uuid
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -16,6 +17,8 @@ from web_fragments.fragment import Fragment
 from xblock.core import XBlock
 from xblock.fields import DateTime, Integer, Scope, String
 from xblockutils.resources import ResourceLoader
+
+log = logging.getLogger(__name__)
 
 class LimeSurveyAPIError(Exception):
     """Exception raised when the LimeSurvey API returns an error."""
@@ -185,6 +188,7 @@ class LimeSurveyXBlock(XBlock):
             try:
                 self.setup_student_view_survey(user, anonymous_user_id)
             except Exception as e:  # pylint: disable=broad-except
+                log.exception("Error while setting up student view of LimeSurveyXBlock")
                 error_message = str(e)
 
         context = {
@@ -421,6 +425,7 @@ class LimeSurveyXBlock(XBlock):
             return result
 
         if result.get("status") not in ("OK", None):
+            log.error("LimeSurvey API error: %s", result.get("status"))
             raise API_EXCEPTIONS_MAPPING[result.get("status")]
 
         return result
