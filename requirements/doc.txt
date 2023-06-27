@@ -48,6 +48,8 @@ coverage[toml]==7.2.7
     #   pytest-cov
 cryptography==41.0.1
     # via secretstorage
+ddt==1.6.0
+    # via -r requirements/test.txt
 django==3.2.19
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
@@ -112,7 +114,7 @@ jinja2==3.1.2
     #   -r requirements/test.txt
     #   code-annotations
     #   sphinx
-keyring==24.0.0
+keyring==24.1.0
     # via twine
 lxml==4.9.2
     # via
@@ -175,7 +177,7 @@ pygments==2.15.1
     #   sphinx
 pyproject-hooks==1.0.0
     # via build
-pytest==7.3.2
+pytest==7.4.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -236,9 +238,8 @@ snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.4.1
     # via beautifulsoup4
-sphinx==5.3.0
+sphinx==6.2.1
     # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/doc.in
     #   pydata-sphinx-theme
     #   sphinx-book-theme
