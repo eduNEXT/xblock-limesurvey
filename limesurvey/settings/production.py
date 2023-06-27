@@ -22,3 +22,13 @@ def plugin_settings(settings):
         "LIMESURVEY_API_PASSWORD",
         settings.LIMESURVEY_API_PASSWORD
     )
+
+    # Limesurvey backend settings
+    settings.LIMESURVEY_COURSEWARE_BACKEND = getattr(settings, "ENV_TOKENS", {}).get(
+        "LIMESURVEY_COURSEWARE_BACKEND",
+        settings.LIMESURVEY_COURSEWARE_BACKEND
+    )
+    settings.LIMESURVEY_XMODULE_BACKEND = getattr(settings, "ENV_TOKENS", {}).get(
+        "LIMESURVEY_XMODULE_BACKEND",
+        settings.LIMESURVEY_XMODULE_BACKEND
+    )
