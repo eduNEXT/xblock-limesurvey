@@ -19,7 +19,7 @@ from limesurvey.limesurvey import (
 )
 
 
-class TestLimeSurveyXblock(TestCase):
+class TestLimeSurveyXBlock(TestCase):
     """
     Test suite for the LimeSurveyXBlock definition class.
     """
