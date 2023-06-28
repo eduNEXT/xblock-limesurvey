@@ -16,6 +16,7 @@ from limesurvey.limesurvey import (
     LimeSurveyAPIError,
     LimeSurveyXBlock,
     NoParticipantFound,
+    MisconfiguredLimeSurveyService,
 )
 
 
@@ -380,6 +381,40 @@ class TestLimeSurveyUtilities(TestCase):
         self.xblock.set_session_key()
 
         self.xblock.call_procedure.assert_not_called()
+
+    @override_settings(
+        LIMESURVEY_API_USER=None,
+        LIMESURVEY_API_PASSWORD=None,
+    )
+    def test_set_session_key_misconfigured(self):
+        """
+        Check that when the LimeSurvey Xblock session key set up is misconfigured.
+
+        Expected result:
+            - Since the API user/password is not set then an exception is raised.
+        """
+        self.xblock.get_survey_summary = Mock(side_effect=InvalidSessionKey)
+        self.xblock.last_login_attempt = None
+
+        with self.assertRaises(MisconfiguredLimeSurveyService):
+            self.xblock.set_session_key()
+
+    @override_settings(LIMESURVEY_URL=None)
+    def test_set_student_view_service_misconfigured(self):
+        """
+        Check that when the LimeSurvey Xblock student view set up is misconfigured.
+
+        Expected result:
+            - Since the service URL is not set, an exception is raised.
+        """
+        user = Mock()
+        anonymous_user_id = "test-anonymous-user-id"
+
+        with self.assertRaises(MisconfiguredLimeSurveyService):
+            self.xblock.setup_student_view_survey(
+                user,
+                anonymous_user_id,
+            )
 
     def test_login_attempt_exceeded(self):
         """

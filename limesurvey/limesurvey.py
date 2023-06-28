@@ -80,6 +80,18 @@ class InvalidCredentials(LimeSurveyAPIError):
         super().__init__(message)
 
 
+class MisconfiguredLimeSurveyService(Exception):
+    """Exception raised when the survey service is misconfigured."""
+
+    def __init__(self, message="Survey service is misconfigured."):
+        """Initialize the exception.
+
+        args:
+            message: The error message for the misconfigured survey service error.
+        """
+        super().__init__(message)
+
+
 API_EXCEPTIONS_MAPPING = defaultdict(lambda: LimeSurveyAPIError)
 API_EXCEPTIONS_MAPPING["Invalid session key"] = InvalidSessionKey
 API_EXCEPTIONS_MAPPING["No survey participants found."] = NoParticipantFound
@@ -169,7 +181,11 @@ class LimeSurveyXBlock(XBlock):
         """
         Setup LimeSurvey configurations for the student view of the XBlock.
         """
-        self.survey_url = f"{settings.LIMESURVEY_URL}/{self.survey_id}"
+        limesurvey_url = getattr(settings, "LIMESURVEY_URL", None)
+        if not limesurvey_url:
+            raise MisconfiguredLimeSurveyService("LIMESURVEY_URL is not set in your service configurations.")
+
+        self.survey_url = f"{limesurvey_url}/{self.survey_id}"
         self.set_session_key()
         self.add_participant_to_survey(user, anonymous_user_id)
         self.set_student_access_code(anonymous_user_id)
@@ -234,10 +250,6 @@ class LimeSurveyXBlock(XBlock):
         """
         self.display_name = data.get("display_name")
         self.survey_id = data.get("survey_id")
-
-        return {
-            "result": "success",
-        }
 
     def get_survey_summary(self) -> dict:
         """
@@ -367,12 +379,18 @@ class LimeSurveyXBlock(XBlock):
         )
         if login_attempts_exceeded:
             raise ExceededLoginAttempts
+
         self.last_login_attempt = datetime.now()
+
+        limesurvey_api_user = getattr(settings, "LIMESURVEY_API_USER", None)
+        limesurvey_api_password = getattr(settings, "LIMESURVEY_API_PASSWORD", None)
+        if not limesurvey_api_user or not limesurvey_api_password:
+            raise MisconfiguredLimeSurveyService("LimeSurvey API user or password not configured")
 
         session_key = self.call_procedure(
             "get_session_key",
-            settings.LIMESURVEY_API_USER,
-            settings.LIMESURVEY_API_PASSWORD,
+            limesurvey_api_user,
+            limesurvey_api_password,
             get_session_key=True,
         )
 
