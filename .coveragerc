@@ -4,3 +4,9 @@ data_file = .coverage
 source=limesurvey
 omit =
     tests
+    edxapp_wrapper
+    settings
+    backends
+    locale
+    static
+    templates
