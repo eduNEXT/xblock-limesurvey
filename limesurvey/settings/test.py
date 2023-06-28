@@ -55,5 +55,5 @@ LIMESURVEY_URL = "https://test-url.com"
 LIMESURVEY_INTERNAL_API = "https://test-url.com/index.php/admin/remotecontrol"
 
 # Limesurvey backend settings
-LIMESURVEY_COURSEWARE_BACKEND = "limesurvey.edxapp_wrapper.backend.courseware_p_v1"
-LIMESURVEY_XMODULE_BACKEND = "limesurvey.edxapp_wrapper.backend.xmodule_p_v1"
+LIMESURVEY_COURSEWARE_BACKEND = "limesurvey.edxapp_wrapper.backends.courseware_p_v1"
+LIMESURVEY_XMODULE_BACKEND = "limesurvey.edxapp_wrapper.backends.xmodule_p_v1"

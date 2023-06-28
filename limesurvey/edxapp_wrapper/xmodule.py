@@ -15,4 +15,4 @@ def get_modulestore_function(*args, **kwargs):
     return backend.get_modulestore(*args, **kwargs)
 
 
-modulestore = get_modulestore_function()
+modulestore = get_modulestore_function

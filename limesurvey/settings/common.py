@@ -15,5 +15,5 @@ def plugin_settings(settings):
     settings.LIMESURVEY_API_PASSWORD = "CHANGE-ME"
 
     # Limesurvey backend settings
-    settings.LIMESURVEY_COURSEWARE_BACKEND = "limesurvey.edxapp_wrapper.backend.courseware_p_v1"
-    settings.LIMESURVEY_XMODULE_BACKEND = "limesurvey.edxapp_wrapper.backend.xmodule_p_v1"
+    settings.LIMESURVEY_COURSEWARE_BACKEND = "limesurvey.edxapp_wrapper.backends.courseware_p_v1"
+    settings.LIMESURVEY_XMODULE_BACKEND = "limesurvey.edxapp_wrapper.backends.xmodule_p_v1"

@@ -15,4 +15,4 @@ def get_object_by_usage_id_function(*args, **kwargs):
     return backend.get_object_by_usage_id(*args, **kwargs)
 
 
-get_object_by_usage_id = get_object_by_usage_id_function()
+get_object_by_usage_id = get_object_by_usage_id_function
