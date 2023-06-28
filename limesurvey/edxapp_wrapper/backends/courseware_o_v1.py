@@ -1,7 +1,7 @@
 """
 Courseware definitions for Open edX Olive release.
 """
-from lms.djangoapps.courseware.module_render import get_module_by_usage_id
+from lms.djangoapps.courseware.module_render import get_module_by_usage_id  # pylint: disable=import-error
 
 
 def get_object_by_usage_id(request, course_id, location, disable_staff_debug_info=False, course=None):

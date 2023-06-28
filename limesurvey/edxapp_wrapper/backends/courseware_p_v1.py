@@ -1,7 +1,7 @@
 """
 Courseware definitions for Open edX Palm release.
 """
-from lms.djangoapps.courseware.block_render import get_block_by_usage_id
+from lms.djangoapps.courseware.block_render import get_block_by_usage_id  # pylint: disable=import-error
 
 
 def get_object_by_usage_id(request, course_id, location, disable_staff_debug_info=False, course=None):
