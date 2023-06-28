@@ -16,6 +16,24 @@ Unreleased
 
 *
 
+0.2.1 – 2023-06-28
+**********************************************
+
+Added
+=====
+
+* Test suite for the Xblock class definition.
+* Logging messages when raising an error for better debugging.
+
+
+Changed
+=======
+
+* Return from instructor filter if there is no LimeSurvey block in the course.
+* Use import backends to handle multiple source code versions.
+* Check if settings exist before using them in the views to avoid misleading errors.
+
+
 0.2.0 – 2023-06-26
 **********************************************
 
