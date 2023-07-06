@@ -16,6 +16,22 @@ Unreleased
 
 *
 
+
+0.2.3 – 2023-07-06
+**********************************************
+
+Added
+=====
+
+* Added XBlock compatibility notes.
+
+
+Changed
+=======
+
+* Use different admin endpoint for instructors.
+
+
 0.2.2 – 2023-06-28
 **********************************************
 
