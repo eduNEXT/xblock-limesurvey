@@ -33,6 +33,31 @@ For details regarding how to deploy this or any other XBlock in the lms instance
 
 .. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
+Compatibility Notes
+===================
+
++------------------+--------------+
+| Open edX Release | Version      |
++==================+==============+
+| Olive            | >= 0.2.1     |
++------------------+--------------+
+| Palm             | >= 0.2.0     |
++------------------+--------------+
+
+The following changes to the plugin settings are necessary. If the release you are looking for is
+not listed, then the accumulation of changes from previous releases is enough.
+
+**Olive**
+
+.. code-block:: yaml
+
+   LIMESURVEY_COURSEWARE_BACKEND: "limesurvey.edxapp_wrapper.backends.courseware_o_v1"
+
+These settings can be changed in ``limesurvey/settings/common.py`` or, for example, in tutor configurations.
+
+**NOTE**: the current ``common.py`` works with Open edX Palm version.
+
+
 Set up LimeSurvey
 *****************
 From the LimeSurvey administrator you must enable the use of the API:
