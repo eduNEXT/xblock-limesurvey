@@ -7,6 +7,8 @@ function LimeSurveyXBlock(runtime, element) {
             display_name: $(element).find('input[name=limesurvey_display_name]').val(),
             survey_id: $(element).find('input[name=limesurvey_survey_id]').val(),
             limesurvey_url: $(element).find('input[name=limesurvey_url]').val(),
+            anonymous_survey: Number($(element).find('select[name=limesurvey_anonymous_survey]').val()),
+            open_access_mode: Number($(element).find('select[name=limesurvey_open_access_mode]').val()),
         };
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
           window.location.reload(false);

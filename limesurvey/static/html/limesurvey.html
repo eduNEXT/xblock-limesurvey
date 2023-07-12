@@ -3,8 +3,12 @@
     {% if error_message %}
     <p>The survey can't be rendered due to the following error: <b>{{error_message}}</b></p>
     <p>Please contact the instructor or an administrator.</p>
-    {% else %}
-    <iframe class="survey-iframe" src="{{ self.survey_url }}?token={{ self.access_code }}" frameborder="0"></iframe>
+    {% else %} 
+        {% if self.open_access_mode %}
+            <iframe class="survey-iframe" src="{{ self.survey_url }}" frameborder="0"></iframe>
+        {% else %}
+            <iframe class="survey-iframe" src="{{ self.survey_url }}?token={{ self.access_code }}" frameborder="0"></iframe>
+        {% endif %}
     {% endif %}
 </div>
 {% else %}
