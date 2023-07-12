@@ -202,7 +202,6 @@ class LimeSurveyXBlock(XBlock):
 
         if not self.anonymous_survey:
             self.add_participant_to_survey(user, anonymous_user_id)
-        if not self.open_access_mode:
             self.set_student_access_code(anonymous_user_id)
 
     def student_view(self, show_survey):
@@ -249,10 +248,8 @@ class LimeSurveyXBlock(XBlock):
             "limesurvey_url": self.limesurvey_url,
             "survey_id": self.survey_id,
             "anonymous_survey": self.anonymous_survey,
-            "open_access_mode": self.open_access_mode,
             "survey_id_field": self.fields["survey_id"],
             "anonymous_survey_field": self.fields["anonymous_survey"],
-            "open_access_mode_field": self.fields["open_access_mode"],
         }
 
         html = self.render_template("static/html/limesurvey_edit.html", context)
