@@ -127,6 +127,7 @@ class TestLimeSurveyXBlock(TestCase):
             "survey_id": "test-survey-id",
             "display_name": "Test LimeSurvey",
             "anonymous_survey": True,
+            "limesurvey_url": self.xblock.limesurvey_url,
         }
         expected_context = {
             "survey_id": self.xblock.survey_id,
@@ -135,6 +136,7 @@ class TestLimeSurveyXBlock(TestCase):
             "anonymous_survey": self.xblock.anonymous_survey,
             "survey_id_field": self.xblock.fields["survey_id"],
             "anonymous_survey_field": self.xblock.fields["anonymous_survey"],
+            "limesurvey_url_field": self.xblock.fields["limesurvey_url"],
         }
 
         self.xblock.studio_view()

@@ -118,9 +118,11 @@ class LimeSurveyXBlock(XBlock):
 
     limesurvey_url = String(
         display_name="LimeSurvey URL",
-        default=None,
+        default="",
         scope=Scope.settings,
-        help="The URL of the LimeSurvey installation. If not set, it will be taken from the service configurations.",
+        help="""
+        The URL of the LimeSurvey installation without the trailing slash.
+        If not set, it will be taken from the service configurations.""",
     )
 
     anonymous_survey = Boolean(
