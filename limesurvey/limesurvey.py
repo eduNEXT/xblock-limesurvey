@@ -116,6 +116,12 @@ class LimeSurveyXBlock(XBlock):
         help="The ID of the survey to be embedded",
     )
 
+    limesurvey_url = String(
+        display_name="LimeSurvey URL",
+        default=None,
+        scope=Scope.settings
+    )
+
     session_key = String(
         default=None,
         scope=Scope.user_state_summary,
@@ -181,7 +187,7 @@ class LimeSurveyXBlock(XBlock):
         """
         Setup LimeSurvey configurations for the student view of the XBlock.
         """
-        limesurvey_url = getattr(settings, "LIMESURVEY_URL", None)
+        limesurvey_url = self.limesurvey_url or getattr(settings, "LIMESURVEY_URL", None)
         if not limesurvey_url:
             raise MisconfiguredLimeSurveyService("LIMESURVEY_URL is not set in your service configurations.")
 
@@ -229,7 +235,11 @@ class LimeSurveyXBlock(XBlock):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        context = {"survey_id": self.survey_id, "display_name": self.display_name}
+        context = {
+            "survey_id": self.survey_id,
+            "display_name": self.display_name,
+            "limesurvey_url": self.limesurvey_url
+        }
         html = self.render_template("static/html/limesurvey_edit.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -250,6 +260,7 @@ class LimeSurveyXBlock(XBlock):
         """
         self.display_name = data.get("display_name")
         self.survey_id = data.get("survey_id")
+        self.limesurvey_url = data.get("limesurvey_url")
 
     def get_survey_summary(self) -> dict:
         """

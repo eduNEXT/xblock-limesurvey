@@ -40,6 +40,7 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.setup_student_view_survey = Mock()
         self.xblock.display_name = "Test LimeSurvey"
         self.xblock.survey_id = "test-survey-id"
+        self.xblock.limesurvey_url = "test-limesurvey-url"
 
     @patch("limesurvey.limesurvey.Fragment")
     def test_student_view_with_survey(self, _):
@@ -124,6 +125,7 @@ class TestLimeSurveyXBlock(TestCase):
         expected_context = {
             "survey_id": self.xblock.survey_id,
             "display_name": self.xblock.display_name,
+            "limesurvey_url": self.xblock.limesurvey_url,
         }
 
         self.xblock.studio_view()
@@ -409,6 +411,7 @@ class TestLimeSurveyUtilities(TestCase):
         """
         user = Mock()
         anonymous_user_id = "test-anonymous-user-id"
+        self.xblock.limesurvey_url = None
 
         with self.assertRaises(MisconfiguredLimeSurveyService):
             self.xblock.setup_student_view_survey(

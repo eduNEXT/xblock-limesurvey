@@ -6,6 +6,7 @@ function LimeSurveyXBlock(runtime, element) {
         var data = {
             display_name: $(element).find('input[name=limesurvey_display_name]').val(),
             survey_id: $(element).find('input[name=limesurvey_survey_id]').val(),
+            limesurvey_url: $(element).find('input[name=limesurvey_url]').val(),
         };
         $.post(handlerUrl, JSON.stringify(data)).done(function(response) {
           window.location.reload(false);
