@@ -16,6 +16,15 @@ Unreleased
 
 *
 
+0.3.0 – 2023-07-12
+**********************************************
+
+Added
+=====
+
+* Xblock support for anonymous surveys.
+* Support for multiple LimeSurvey instances per course.
+
 
 0.2.3 – 2023-07-06
 **********************************************
