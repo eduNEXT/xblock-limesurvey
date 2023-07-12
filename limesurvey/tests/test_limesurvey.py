@@ -41,6 +41,7 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.display_name = "Test LimeSurvey"
         self.xblock.survey_id = "test-survey-id"
         self.xblock.limesurvey_url = "test-limesurvey-url"
+        self.xblock.anonymous_survey = True
 
     @patch("limesurvey.limesurvey.Fragment")
     def test_student_view_with_survey(self, _):
@@ -122,10 +123,20 @@ class TestLimeSurveyXBlock(TestCase):
         Expected result:
             - The studio view is set up for the render.
         """
+        self.xblock.fields = {
+            "survey_id": "test-survey-id",
+            "display_name": "Test LimeSurvey",
+            "anonymous_survey": True,
+            "limesurvey_url": self.xblock.limesurvey_url,
+        }
         expected_context = {
             "survey_id": self.xblock.survey_id,
             "display_name": self.xblock.display_name,
             "limesurvey_url": self.xblock.limesurvey_url,
+            "anonymous_survey": self.xblock.anonymous_survey,
+            "survey_id_field": self.xblock.fields["survey_id"],
+            "anonymous_survey_field": self.xblock.fields["anonymous_survey"],
+            "limesurvey_url_field": self.xblock.fields["limesurvey_url"],
         }
 
         self.xblock.studio_view()

@@ -15,7 +15,7 @@ from django.template import Context, Template
 from django.utils import translation
 from web_fragments.fragment import Fragment
 from xblock.core import XBlock
-from xblock.fields import DateTime, Integer, Scope, String
+from xblock.fields import DateTime, Integer, Scope, String, Boolean
 from xblockutils.resources import ResourceLoader
 
 log = logging.getLogger(__name__)
@@ -118,8 +118,17 @@ class LimeSurveyXBlock(XBlock):
 
     limesurvey_url = String(
         display_name="LimeSurvey URL",
-        default=None,
-        scope=Scope.settings
+        default="",
+        scope=Scope.settings,
+        help="""
+        The URL of the LimeSurvey installation without the trailing slash.
+        If not set, it will be taken from the service configurations.""",
+    )
+
+    anonymous_survey = Boolean(
+        default=False,
+        scope=Scope.settings,
+        help="Whether the survey is anonymous or not.",
     )
 
     session_key = String(
@@ -131,7 +140,7 @@ class LimeSurveyXBlock(XBlock):
     survey_url = String(
         default=None,
         scope=Scope.user_state_summary,
-        help="The URL of the survey",
+        help="The URL of the survey for the current student.",
     )
 
     access_code = String(
@@ -193,8 +202,10 @@ class LimeSurveyXBlock(XBlock):
 
         self.survey_url = f"{limesurvey_url}/{self.survey_id}"
         self.set_session_key()
-        self.add_participant_to_survey(user, anonymous_user_id)
-        self.set_student_access_code(anonymous_user_id)
+
+        if not self.anonymous_survey:
+            self.add_participant_to_survey(user, anonymous_user_id)
+            self.set_student_access_code(anonymous_user_id)
 
     def student_view(self, show_survey):
         """
@@ -236,10 +247,15 @@ class LimeSurveyXBlock(XBlock):
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
         context = {
-            "survey_id": self.survey_id,
             "display_name": self.display_name,
-            "limesurvey_url": self.limesurvey_url
+            "limesurvey_url": self.limesurvey_url,
+            "survey_id": self.survey_id,
+            "anonymous_survey": self.anonymous_survey,
+            "survey_id_field": self.fields["survey_id"],
+            "anonymous_survey_field": self.fields["anonymous_survey"],
+            "limesurvey_url_field": self.fields["limesurvey_url"],
         }
+
         html = self.render_template("static/html/limesurvey_edit.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
@@ -261,6 +277,7 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.survey_id = data.get("survey_id")
         self.limesurvey_url = data.get("limesurvey_url")
+        self.anonymous_survey = bool(data.get("anonymous_survey"))
 
     def get_survey_summary(self) -> dict:
         """

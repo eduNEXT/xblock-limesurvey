@@ -11,12 +11,24 @@
         <label class="label setting-label" for="limesurvey_survey_id">Survey ID</label>
         <input class="input setting-input" name="limesurvey_survey_id" id="limesurvey_survey_id" value="{{survey_id}}" type="text" />
       </div>
+      <span class="tip setting-help"> {{ survey_id_field.help }} </span>
+    </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="limesurvey_anonymous_survey">Anonymous survey</label>
+        <select id="limesurvey_anonymous_survey" class="input setting-input" name="limesurvey_anonymous_survey" >
+            <option value=1 {% if anonymous_survey %} selected{% endif %}> True </option>
+            <option value=0 {% if not anonymous_survey %} selected{% endif %}> False </option>
+        </select>
+      </div>
+      <span class="tip setting-help"> {{ anonymous_survey_field.help }} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
         <label class="label setting-label" for="limesurvey_url">LimeSurvey URL</label>
         <input class="input setting-input" name="limesurvey_url" id="limesurvey_url" value="{{limesurvey_url}}" type="text" />
       </div>
+      <span class="tip setting-help"> {{ limesurvey_url_field.help }} </span>
     </li>
   </ul>
 
