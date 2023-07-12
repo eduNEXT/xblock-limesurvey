@@ -119,7 +119,8 @@ class LimeSurveyXBlock(XBlock):
     limesurvey_url = String(
         display_name="LimeSurvey URL",
         default=None,
-        scope=Scope.settings
+        scope=Scope.settings,
+        help="The URL of the LimeSurvey installation. If not set, it will be taken from the service configurations.",
     )
 
     anonymous_survey = Boolean(
@@ -137,7 +138,7 @@ class LimeSurveyXBlock(XBlock):
     survey_url = String(
         default=None,
         scope=Scope.user_state_summary,
-        help="The URL of the survey",
+        help="The URL of the survey for the current student.",
     )
 
     access_code = String(
@@ -250,6 +251,7 @@ class LimeSurveyXBlock(XBlock):
             "anonymous_survey": self.anonymous_survey,
             "survey_id_field": self.fields["survey_id"],
             "anonymous_survey_field": self.fields["anonymous_survey"],
+            "limesurvey_url_field": self.fields["limesurvey_url"],
         }
 
         html = self.render_template("static/html/limesurvey_edit.html", context)
