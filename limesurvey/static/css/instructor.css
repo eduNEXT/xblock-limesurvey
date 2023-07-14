@@ -1,13 +1,6 @@
-.limesurvey-instructor-wrapper {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%;
-}
-
-.limesurvey-instructor-wrapper iframe {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+table.limesurvey-xblocks-table th,
+table.limesurvey-xblocks-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
 }

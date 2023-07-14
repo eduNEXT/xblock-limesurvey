@@ -4,6 +4,7 @@ Open edX Filters needed for LimeSurvey integration.
 from crum import get_current_request
 from django.conf import settings
 from openedx_filters import PipelineStep
+from django.conf import settings
 
 from limesurvey.edxapp_wrapper.courseware import get_object_by_usage_id
 from limesurvey.edxapp_wrapper.xmodule import modulestore
@@ -41,8 +42,16 @@ class AddInstructorLimesurveyTab(PipelineStep):
             request, str(course.id), str(limesurvey_block.location),
             disable_staff_debug_info=True, course=course
         )
+
+        # Get display name and url for each LimeSurvey block
+        limesurvey_url = getattr(settings, "LIMESURVEY_URL", None)
+        xblock_urls = [
+            (block.display_name, block.limesurvey_url or limesurvey_url)
+            for block in limesurvey_blocks
+        ]
+
         section_data = {
-            "fragment": block.render("instructor_view", context={}),
+            "fragment": block.render("instructor_view", context={"xblock_urls": xblock_urls}),
             "section_key": LIMESURVEY_BLOCK_CATEGORY,
             "section_display_name": "LimeSurvey",
             "course_id": str(course.id),

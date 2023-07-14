@@ -476,11 +476,11 @@ class LimeSurveyXBlock(XBlock):
 
         return result
 
-    def instructor_view(self, context=None):
+    def instructor_view(self, context: dict):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        context = {"limesurvey_url": getattr(settings, "LIMESURVEY_URL", None)}
+        context.update({"limesurvey_url": getattr(settings, "LIMESURVEY_URL", None)})
         html = self.render_template("static/html/instructor.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/instructor.css"))

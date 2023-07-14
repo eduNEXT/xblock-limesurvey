@@ -1,3 +1,18 @@
-<div class="limesurvey-instructor-wrapper">
-    <iframe class="limesurvey-admin-iframe" src="{{limesurvey_url}}/admin/" frameborder="0"></iframe>
-</div>
+<table class="limesurvey-xblocks-table">
+    <thead>
+        <tr>
+            <th>Component</th>
+            <th>Management Console</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for name, url in xblock_urls %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>
+               <a href="{{ url }}/admin/"><button type="button">{{ url }}</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
