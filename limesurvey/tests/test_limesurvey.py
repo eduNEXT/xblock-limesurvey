@@ -157,7 +157,7 @@ class TestLimeSurveyXBlock(TestCase):
             "limesurvey_url": getattr(settings, "LIMESURVEY_URL", None),
         }
 
-        self.xblock.instructor_view()
+        self.xblock.instructor_view({})
 
         self.xblock.render_template.assert_called_once_with(
             "static/html/instructor.html",

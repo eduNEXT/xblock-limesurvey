@@ -1,22 +1,38 @@
 <div class="limesurvey-instructor-wrapper"></div>
-<table class="limesurvey-xblocks-table">
-    <thead>
-        <tr>
-            <th>Component</th>
-            <th>Management Console</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for name, url in xblock_urls %}
-        <tr>
-            <td>{{ name }}</td>
-            <td>
-                <a class="admin-panel" href="{{ url }}/admin/"><button type="button">Management Console</button></a>
+<div class="paragon-styles">
+    <div class="pgn__data-table-container">
+      <table role="table" class="pgn__data-table is-striped">
+        <thead>
+          <tr role="row">
+            <th colspan="1" role="columnheader">
+              <span class="d-flex align-items-center"
+                ><span>Component</span></span
+              >
+            </th>
+            <th colspan="1" role="columnheader">
+              <span class="d-flex align-items-center"
+                ><span>Management Console</span></span
+              >
+            </th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {% for name, url in xblock_urls %}
+          <tr role="row" class="pgn__data-table-row">
+            <td role="cell" class="pgn__data-table-cell-wrap">{{ name }}</td>
+            <td role="cell" class="pgn__data-table-cell-wrap">
+              <a class="admin-panel" href="{{ url }}/admin/"
+                ><button class="btn btn-primary" ="button">
+                  Management Console
+                </button></a
+              >
             </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 <script type="text/javascript">
     $(function () {
@@ -26,7 +42,7 @@
             $('.limesurvey-instructor-wrapper').show();
             const url = $(this).attr('href');
             $('.limesurvey-instructor-wrapper').append(`
-                <a href="" class="go-back">Back</a>
+                <a href="" class="go-back">← Back</a>
                 <div>
                     <iframe
                         class="limesurvey-admin-iframe"
