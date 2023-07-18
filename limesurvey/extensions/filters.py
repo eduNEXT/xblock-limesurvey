@@ -4,7 +4,6 @@ Open edX Filters needed for LimeSurvey integration.
 from crum import get_current_request
 from django.conf import settings
 from openedx_filters import PipelineStep
-from django.conf import settings
 
 from limesurvey.edxapp_wrapper.courseware import get_object_by_usage_id
 from limesurvey.edxapp_wrapper.xmodule import modulestore
