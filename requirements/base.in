@@ -7,5 +7,5 @@ Mako
 XBlock 
 xblock-utils
 requests
-git+https://github.com/openedx/openedx-filters.git@MJG/instructor-tab-filters
+openedx-filters
 django-crum

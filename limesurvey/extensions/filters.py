@@ -2,6 +2,7 @@
 Open edX Filters needed for LimeSurvey integration.
 """
 from crum import get_current_request
+from django.conf import settings
 from openedx_filters import PipelineStep
 
 from limesurvey.edxapp_wrapper.courseware import get_object_by_usage_id
@@ -20,6 +21,9 @@ class AddInstructorLimesurveyTab(PipelineStep):
             context (dict): the context for the instructor dashboard.
             _ (str): instructor dashboard template name.
         """
+        if not settings.FEATURES.get("ENABLE_LIMESURVEY_INSTRUCTOR_VIEW", False):
+            return context
+
         course = context["course"]
         request = get_current_request()
         limesurvey_blocks = modulestore().get_items(
