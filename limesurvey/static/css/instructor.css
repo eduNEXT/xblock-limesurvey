@@ -12,10 +12,3 @@
 .go-back {
     margin: 16px 0px 16px 0px;
 }
-
-table.limesurvey-xblocks-table th,
-table.limesurvey-xblocks-table td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-}

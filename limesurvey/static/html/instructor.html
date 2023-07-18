@@ -34,6 +34,7 @@
     </div>
   </div>
 
+<!-- This script is because it's currently not possible to add sections dinamically from the frontend. -->
 <script type="text/javascript">
     $(function () {
         $('.limesurvey-instructor-wrapper').hide();
@@ -51,10 +52,10 @@
                     </iframe>
                 </div>
             `);
-            $('.limesurvey-xblocks-table').hide();
+            $('.paragon-styles').hide();
             $('.go-back').click(function (e) {
                 e.preventDefault();
-                $('.limesurvey-xblocks-table').show();
+                $('.paragon-styles').show();
                 $('.limesurvey-instructor-wrapper').html('');
                 $(this).hide();
             });

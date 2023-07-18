@@ -43,7 +43,6 @@ class AddInstructorLimesurveyTab(PipelineStep):
             disable_staff_debug_info=True, course=course
         )
 
-        # Get display name and url for each LimeSurvey block
         limesurvey_url = getattr(settings, "LIMESURVEY_URL", None)
         xblock_urls = [
             (block.display_name, block.limesurvey_url or limesurvey_url)
