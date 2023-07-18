@@ -12,7 +12,7 @@ asgiref==3.7.2
     # via
     #   -r requirements/quality.txt
     #   django
-astroid==2.15.5
+astroid==2.15.6
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -36,12 +36,12 @@ cffi==1.15.1
     #   cryptography
 chardet==5.1.0
     # via diff-cover
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   requests
-click==8.1.3
+click==8.1.5
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -61,23 +61,23 @@ coverage[toml]==7.2.7
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-cryptography==41.0.1
+cryptography==41.0.2
     # via
     #   -r requirements/ci.txt
     #   secretstorage
 ddt==1.6.0
     # via -r requirements/quality.txt
-diff-cover==7.6.0
+diff-cover==7.7.0
     # via -r requirements/dev.in
 dill==0.3.6
     # via
     #   -r requirements/quality.txt
     #   pylint
-distlib==0.3.6
+distlib==0.3.7
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==3.2.19
+django==3.2.20
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
@@ -98,13 +98,13 @@ docutils==0.20.1
     # via
     #   -r requirements/ci.txt
     #   readme-renderer
-edx-i18n-tools==0.9.2
+edx-i18n-tools==1.0.0
     # via
     #   -r requirements/dev.in
     #   -r requirements/quality.txt
 edx-lint==5.3.4
     # via -r requirements/quality.txt
-exceptiongroup==1.1.1
+exceptiongroup==1.1.2
     # via
     #   -r requirements/quality.txt
     #   pytest
@@ -122,12 +122,12 @@ idna==3.4
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   requests
-importlib-metadata==6.7.0
+importlib-metadata==6.8.0
     # via
     #   -r requirements/ci.txt
     #   keyring
     #   twine
-importlib-resources==5.12.0
+importlib-resources==6.0.0
     # via
     #   -r requirements/ci.txt
     #   keyring
@@ -139,7 +139,7 @@ isort==5.12.0
     # via
     #   -r requirements/quality.txt
     #   pylint
-jaraco-classes==3.2.3
+jaraco-classes==3.3.0
     # via
     #   -r requirements/ci.txt
     #   keyring
@@ -153,7 +153,7 @@ jinja2==3.1.2
     #   -r requirements/quality.txt
     #   code-annotations
     #   diff-cover
-keyring==24.1.0
+keyring==24.2.0
     # via
     #   -r requirements/ci.txt
     #   twine
@@ -161,7 +161,7 @@ lazy-object-proxy==1.9.0
     # via
     #   -r requirements/quality.txt
     #   astroid
-lxml==4.9.2
+lxml==4.9.3
     # via
     #   -r requirements/quality.txt
     #   xblock
@@ -191,7 +191,7 @@ more-itertools==9.1.0
     # via
     #   -r requirements/ci.txt
     #   jaraco-classes
-openedx-filters @ git+https://github.com/openedx/openedx-filters.git@MJG/instructor-tab-filters
+openedx-filters==1.4.0
     # via -r requirements/quality.txt
 packaging==23.1
     # via
@@ -201,7 +201,7 @@ packaging==23.1
     #   build
     #   pytest
     #   tox
-path==16.6.0
+path==16.7.1
     # via
     #   -r requirements/quality.txt
     #   edx-i18n-tools
@@ -209,13 +209,13 @@ pbr==5.11.1
     # via
     #   -r requirements/quality.txt
     #   stevedore
-pip-tools==6.13.0
+pip-tools==7.0.0
     # via -r requirements/pip-tools.txt
 pkginfo==1.9.6
     # via
     #   -r requirements/ci.txt
     #   twine
-platformdirs==3.8.0
+platformdirs==3.9.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -296,7 +296,7 @@ pytz==2023.3
     #   -r requirements/quality.txt
     #   django
     #   xblock
-pyyaml==6.0
+pyyaml==6.0.1
     # via
     #   -r requirements/quality.txt
     #   code-annotations
@@ -364,6 +364,7 @@ tomli==2.0.1
     #   -r requirements/quality.txt
     #   build
     #   coverage
+    #   pip-tools
     #   pylint
     #   pyproject-hooks
     #   pytest
@@ -381,7 +382,7 @@ tox-battery==0.6.1
     # via -r requirements/ci.txt
 twine==4.0.2
     # via -r requirements/ci.txt
-typing-extensions==4.6.3
+typing-extensions==4.7.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -395,7 +396,7 @@ urllib3==2.0.3
     #   -r requirements/quality.txt
     #   requests
     #   twine
-virtualenv==20.23.1
+virtualenv==20.24.0
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -426,7 +427,7 @@ xblock==1.6.2
     #   xblock-utils
 xblock-utils==3.2.0
     # via -r requirements/quality.txt
-zipp==3.15.0
+zipp==3.16.2
     # via
     #   -r requirements/ci.txt
     #   importlib-metadata
