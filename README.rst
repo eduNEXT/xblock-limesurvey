@@ -85,10 +85,11 @@ Next, you must create a user with API access:
        LIMESURVEY_API_USER = "<username>"
        LIMESURVEY_API_PASSWORD = "<password>"
 
+
 Enabling in Studio
 ******************
 
-You can enable the LimeSurvey XBlock in studio through the
+You can enable the LimeSurvey XBlock in the studio through the
 advanced settings.
 
 1. From the main page of a specific course, navigate to
@@ -96,6 +97,34 @@ advanced settings.
 2. Check for the ``Advanced Module List`` policy key, and add
    ``"limesurvey"`` to the policy value list.
 3. Click the "Save changes" button.
+
+
+Instructor Dashboard
+********************
+In the instructor dashboard, you can see a table containing a list
+of all the blocks added to the course by the instructor.
+This table contains the block's name and a button to access the
+administrator according to the URL of the service defined in the block.
+
+
+Behavior
+**************
+1. When the URLs are not configured, the service will display an error message.
+2. When the survey ID is not valid, the service will display an error message.
+
+
+Tips
+****
+1. All surveys added of closed-access mode, must have an ``attribute_1``, which
+   allows the assignment of a unique identifier for each survey participant.
+2. Use distinctive names for each LimeSurvey block to make it easier to identify
+   them in the instructor dashboard.
+3. The URL of the LimeSurvey installation can be edited in each block's configuration
+   in the ``Limesurvey URL`` field. If the field is empty, it will take the default
+   URL defined in the service configuration.
+4. To use anonymous surveys you should edit in the block configuration and set the
+   field ``Anonymous survey = True``.
+
 
 Getting Help
 ************
