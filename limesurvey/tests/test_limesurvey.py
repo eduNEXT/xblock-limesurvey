@@ -19,6 +19,53 @@ from limesurvey.limesurvey import (
     MisconfiguredLimeSurveyService,
 )
 
+from limesurvey.extensions.filters import AddInstructorLimesurveyTab
+
+class TestFilters(TestCase):
+    """
+    Test suite for the LimeSurveyXBlock filters.
+    """
+
+    def setUp(self) -> None:
+        """
+        Set up the test suite.
+        """
+        self.filter = AddInstructorLimesurveyTab(filter_type=Mock(), running_pipeline=Mock())
+
+    @patch("limesurvey.extensions.filters.get_object_by_usage_id")
+    @patch("limesurvey.extensions.filters.modulestore")
+    def test_run_filter_without_blocks(self, modulestore_mock, get_object_by_usage_id_mock):
+        """
+        Check the filter is not executed when there are no LimeSurvey blocks in the course.
+
+        Expected result:
+            - The context is returned without modifications.
+        """
+        modulestore_mock().get_items.return_value = []
+        context = {"course": Mock(id="test-course-id"), "sections": []}
+        template_name = "test-template-name"
+
+        self.filter.run_filter(context, template_name)
+
+        get_object_by_usage_id_mock.assert_not_called()
+
+    @patch("limesurvey.extensions.filters.get_object_by_usage_id")
+    @patch("limesurvey.extensions.filters.modulestore")
+    def test_run_filter_with_blocks(self, modulestore_mock, get_object_by_usage_id_mock):
+        """
+        Check the filter is executed when there are LimeSurvey blocks in the course.
+
+        Expected result:
+            - The context is returned with the LimeSurvey blocks information.
+        """
+        modulestore_mock().get_items.return_value = [Mock(location="test-location")]
+        context = {"course": Mock(id="test-course-id"), "sections": []}
+        template_name = "test-template-name"
+
+        context = self.filter.run_filter(context, template_name)
+
+        get_object_by_usage_id_mock.assert_called_once()
+        self.assertEqual(1, len(context["sections"]))
 
 class TestLimeSurveyXBlock(TestCase):
     """
