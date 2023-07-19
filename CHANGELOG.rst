@@ -16,6 +16,16 @@ Unreleased
 
 *
 
+0.4.0 - 2023-07-19
+**********************************************
+
+Added
+=====
+
+* Add list of multiple LimeSurvey instances from instructor tab.
+* Make instructor view configurable by Django settings.
+
+
 0.3.0 – 2023-07-12
 **********************************************
 
