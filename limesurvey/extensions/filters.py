@@ -19,7 +19,7 @@ class AddInstructorLimesurveyTab(PipelineStep):
 
         Args:
             context (dict): the context for the instructor dashboard.
-            _ (str): instructor dashboard template name.
+            template_name (str): instructor dashboard template name.
         """
         if not settings.FEATURES.get("ENABLE_LIMESURVEY_INSTRUCTOR_VIEW", False):
             return context
@@ -41,8 +41,15 @@ class AddInstructorLimesurveyTab(PipelineStep):
             request, str(course.id), str(limesurvey_block.location),
             disable_staff_debug_info=True, course=course
         )
+
+        limesurvey_url = getattr(settings, "LIMESURVEY_URL", None)
+        xblock_urls = [
+            (block.display_name, block.limesurvey_url or limesurvey_url)
+            for block in limesurvey_blocks
+        ]
+
         section_data = {
-            "fragment": block.render("instructor_view", context={}),
+            "fragment": block.render("instructor_view", context={"xblock_urls": xblock_urls}),
             "section_key": LIMESURVEY_BLOCK_CATEGORY,
             "section_display_name": "LimeSurvey",
             "course_id": str(course.id),

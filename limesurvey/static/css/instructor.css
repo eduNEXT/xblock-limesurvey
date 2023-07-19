@@ -1,13 +1,14 @@
 .limesurvey-instructor-wrapper {
-    position: relative;
     width: 100%;
-    padding-bottom: 56.25%;
+    display: flex;
+    flex-direction: column;
 }
 
 .limesurvey-instructor-wrapper iframe {
-    position: absolute;
     width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    height: 100vh;
+}
+
+.go-back {
+    margin: 16px 0px 16px 0px;
 }
