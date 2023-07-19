@@ -1,5 +1,7 @@
 LimeSurvey XBlock
-#############################
+#################
+
+|status-badge| |license-badge| |ci-badge|
 
 Purpose
 *******
@@ -11,6 +13,7 @@ learning interactives.
 
 LimeSurvey XBlock allows students to view and complete
 the different surveys assigned to them.
+
 
 Getting Started
 ***************
@@ -32,6 +35,7 @@ You can interact with the LimeSurveyXBlock in the Workbench by navigating to htt
 For details regarding how to deploy this or any other XBlock in the lms instance, see the `installing-the-xblock`_ documentation.
 
 .. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
+
 
 Compatibility Notes
 ===================
@@ -60,7 +64,7 @@ These settings can be changed in ``limesurvey/settings/common.py`` or, for examp
 
 Set up LimeSurvey
 *****************
-From the LimeSurvey administrator you must enable the use of the API:
+From the LimeSurvey administrator, you must enable the use of the API:
 
 1. Login in the LimeSurvey admin → ``<LIMESURVEY_DOMAIN>/admin``
 2. Navigate to Configuration → Settings → Global → Interfaces.
@@ -70,13 +74,13 @@ From the LimeSurvey administrator you must enable the use of the API:
 Next, you must create a user with API access:
 
 1. Navigate to Configuration → Users management → Add user.
-2. Fill the form with the desired information. Doesn't set and Expire date/time and set a custom password.
-3. Select the permissions to the user.
+2. Fill the form with the desired information. Doesn't set an Expire date/time and set a custom password.
+3. Select the permissions for the user.
 
    - For the ``Surveys`` permission add permissions to ``View/read`` and ``Update``.
    - Preserve the ``Use internal database authentication`` permission.
 
-   Please, select only the permissions that are necessary, to avoid any unwanted modifications.
+   Please, select only the necessary permissions, to avoid any unwanted modifications.
 4. Save changes.
 5. Add your authentication configuration to your LMS settings.
 
@@ -86,44 +90,70 @@ Next, you must create a user with API access:
        LIMESURVEY_API_PASSWORD = "<password>"
 
 
+Configuring LimeSurvey
+**********************
+
+Survey Modes
+============
+In LimeSurvey, you can configure 2 survey modes: closed or open (anonymous).
+
+- **Closed:** Closed surveys limit access to the survey to any person, i.e., only students with
+  an access code will be able to fill it out. All surveys added to closed-access mode, must have an
+  ``attribute_1``, which allows the assignment of a unique identifier for each survey participant.
+  If this attribute is not added, students will not be able to complete the survey.
+- **Open:** Open surveys allow any student with access to the link to fill out the survey. In this mode,
+  there is no way to relate the answers to the students.
+
+
 Enabling in Studio
 ******************
 
-You can enable the LimeSurvey XBlock in the studio through the
-advanced settings.
+You can enable the LimeSurvey XBlock in the studio through the advanced settings.
 
-1. From the main page of a specific course, navigate to
-   ``Settings -> Advanced Settings`` from the top menu.
-2. Check for the ``Advanced Module List`` policy key, and add
-   ``"limesurvey"`` to the policy value list.
+.. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/67f62cc9-68f5-4d96-a47c-c0ef7f7b6adb
+
+1. From the main page of a specific course, navigate to ``Settings → Advanced Settings`` from the top menu.
+2. Check for the ``Advanced Module List`` policy key, and add ``"limesurvey"`` to the policy value list.
 3. Click the "Save changes" button.
 
 
-Instructor Dashboard
-********************
-In the instructor dashboard, you can see a table containing a list
-of all the blocks added to the course by the instructor.
-This table contains the block's name and a button to access the
-administrator according to the URL of the service defined in the block.
+Configuring Component
+*********************
+.. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/95f42b3d-fd30-4655-ac85-07afefa81b81
+
+Fields
+======
+- **Display name (String)**: Name of the component. This name will be displayed in the instructor dashboard.
+- **Survey ID (Integer)**: The ID of the survey to be embedded. Verify that the field value is correct,
+  otherwise, the service will display an error message from the LMS.
+- **Anonymous Survey (Boolean)**: Whether the survey is anonymous or not. By default it is set to ``False``,
+  to use anonymous surveys you must edit the block configuration and set the value to ``True``
+- **LimeSurvey URL (String)**: The URL of the LimeSurvey installation without the trailing slash. If not
+  set, it will be taken from the service configurations.
 
 
-Behavior
-**************
-1. When the URLs are not configured, the service will display an error message.
-2. When the survey ID is not valid, the service will display an error message.
+View from Learning Management System (LMS)
+******************************************
 
+As a Student
+============
+.. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/b7ad78df-7cc9-4bf6-9c17-41ddd9a8171f
 
-Tips
-****
-1. All surveys added of closed-access mode, must have an ``attribute_1``, which
-   allows the assignment of a unique identifier for each survey participant.
-2. Use distinctive names for each LimeSurvey block to make it easier to identify
-   them in the instructor dashboard.
-3. The URL of the LimeSurvey installation can be edited in each block's configuration
-   in the ``Limesurvey URL`` field. If the field is empty, it will take the default
-   URL defined in the service configuration.
-4. To use anonymous surveys you should edit in the block configuration and set the
-   field ``Anonymous survey = True``.
+- The student observes the component from the LMS and will be able to complete the assigned survey.
+- The student can save the progress of the survey and complete it later. Click on "Resume later",
+  and assigns a name and password. At the next login, the progress can be loaded by clicking on
+  "Load unfinished survey"
+
+As an Instructor
+================
+.. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/0cd3630e-becf-4eaf-ad87-ce0101b11b51
+
+The instructor can access the instructor dashboard. In the instructor dashboard, you can see a table with
+the following columns:
+
+- **Component name:** This is the name assigned to each component in the ``Display name`` field.
+- **Management Console(s):** This is the URL of the administrator assigned to each component in the
+  ``LimeSurvey URL`` field.
 
 
 Getting Help
@@ -151,6 +181,7 @@ For more information about these options, see the `Getting Help`_ page.
 .. _community Slack workspace: https://openedx.slack.com/
 .. _Getting Help: https://openedx.org/getting-help
 
+
 License
 *******
 
@@ -158,6 +189,7 @@ The code in this repository is licensed under the AGPL-3.0 unless
 otherwise noted.
 
 Please see `LICENSE.txt <LICENSE.txt>`_ for details.
+
 
 Contributing
 ************
@@ -171,6 +203,7 @@ to have a discussion about your new feature idea with the maintainers prior to
 beginning development to maximize the chances of your change being accepted.
 You can start a conversation by creating a new issue on this repo summarizing
 your idea.
+
 
 The Open edX Code of Conduct
 ****************************
@@ -188,33 +221,30 @@ file in this repo.
 
 .. _Backstage: https://backstage.openedx.org/catalog/default/component/{{ cookiecutter.repo_name }}
 
+
 Reporting Security Issues
 *************************
 
 Please do not report security issues in public. Please email security@tcril.org.
 
-.. |pypi-badge| image:: https://img.shields.io/pypi/v/{{ cookiecutter.repo_name }}.svg
-    :target: https://pypi.python.org/pypi/{{ cookiecutter.repo_name }}/
+.. |pypi-badge| image:: https://img.shields.io/pypi/v/xblock-limesurvey.svg
+    :target: https://pypi.python.org/pypi/xblock-limesurvey/
     :alt: PyPI
 
-.. |ci-badge| image:: https://github.com/openedx/{{ cookiecutter.repo_name }}/workflows/Python%20CI/badge.svg?branch=main
-    :target: https://github.com/openedx/{{ cookiecutter.repo_name }}/actions
+.. |ci-badge| image:: https://github.com/eduNEXT/xblock-limesurvey/workflows/Python%20CI/badge.svg?branch=main
+    :target: https://github.com/eduNEXT/xblock-limesurvey/actions
     :alt: CI
 
-.. |codecov-badge| image:: https://codecov.io/github/openedx/{{ cookiecutter.repo_name }}/coverage.svg?branch=main
-    :target: https://codecov.io/github/openedx/{{ cookiecutter.repo_name }}?branch=main
+.. |codecov-badge| image:: https://codecov.io/github/eduNEXT/xblock-limesurvey/coverage.svg?branch=main
+    :target: https://codecov.io/github/eduNEXT/xblock-limesurvey?branch=main
     :alt: Codecov
 
-.. |doc-badge| image:: https://readthedocs.org/projects/{{ cookiecutter.repo_name }}/badge/?version=latest
-    :target: https://docs.openedx.org/projects/{{ cookiecutter.repo_name }}
-    :alt: Documentation
-
-.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.repo_name }}.svg
-    :target: https://pypi.python.org/pypi/{{ cookiecutter.repo_name }}/
+.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/xblock-limesurvey.svg
+    :target: https://pypi.python.org/pypi/xblock-limesurvey/
     :alt: Supported Python versions
 
-.. |license-badge| image:: https://img.shields.io/github/license/openedx/{{ cookiecutter.repo_name }}.svg
-    :target: https://github.com/openedx/{{ cookiecutter.repo_name }}/blob/main/LICENSE.txt
+.. |license-badge| image:: https://img.shields.io/github/license/eduNEXT/xblock-limesurvey.svg
+    :target: https://github.com/eduNEXT/xblock-limesurvey/blob/main/LICENSE.txt
     :alt: License
 
 .. TODO: Choose one of the statuses below and remove the other status-badge lines.
