@@ -35,30 +35,4 @@
   </div>
 
 <!-- This script is because it's currently not possible to add sections dinamically from the frontend. -->
-<script type="text/javascript">
-    $(function () {
-        $('.limesurvey-instructor-wrapper').hide();
-        $('.admin-panel').click(function (e) {
-            e.preventDefault();
-            $('.limesurvey-instructor-wrapper').show();
-            const url = $(this).attr('href');
-            $('.limesurvey-instructor-wrapper').append(`
-                <a href="" class="go-back">← Back</a>
-                <div>
-                    <iframe
-                        class="limesurvey-admin-iframe"
-                        frameborder="0"
-                        src="${url}">
-                    </iframe>
-                </div>
-            `);
-            $('.paragon-styles').hide();
-            $('.go-back').click(function (e) {
-                e.preventDefault();
-                $('.paragon-styles').show();
-                $('.limesurvey-instructor-wrapper').html('');
-                $(this).hide();
-            });
-        })
-    });
-</script>
+<script type="text/javascript" src="/limesurvey/static/js/src/instructor.js"></script>
