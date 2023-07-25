@@ -155,6 +155,15 @@ the following columns:
 - **Management Console(s):** This is the URL of the administrator assigned to each component in the
   ``LimeSurvey URL`` field.
 
+To use the instructor management view, you must add this feature to your LMS configurations: 
+
+.. code:: python
+
+    FEATURES["ENABLE_LIMESURVEY_INSTRUCTOR_VIEW"] = True
+
+Currently, the LimeSurvey instructor management view is not broadly available for the community to use. So
+to use it in your installation -- eg. creating your own Open edX docker image, you must follow the instructions explained `here <https://github.com/eduNEXT/xblock-limesurvey/pull/8>`__.
+We're working towards getting this feature upstream.
 
 Getting Help
 ************
