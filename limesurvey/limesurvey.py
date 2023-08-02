@@ -133,6 +133,24 @@ class LimeSurveyXBlock(XBlock):
         """,
     )
 
+    api_username = String(
+        display_name="API username",
+        default="",
+        scope=Scope.settings,
+        help="""The username to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
+        If not set, it will be taken from the service configurations.
+        """,
+    )
+
+    api_password = String(
+        display_name="API user's password",
+        default="",
+        scope=Scope.settings,
+        help="""The password to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
+        If not set, it will be taken from the service configurations.
+        """,
+    )
+
     anonymous_survey = Boolean(
         default=False,
         scope=Scope.settings,
@@ -263,6 +281,8 @@ class LimeSurveyXBlock(XBlock):
             "survey_id_field": self.fields["survey_id"],
             "anonymous_survey_field": self.fields["anonymous_survey"],
             "limesurvey_url_field": self.fields["limesurvey_url"],
+            "api_username_field": self.fields["api_username"],
+            "api_password_field": self.fields["api_password"],
         }
 
         html = self.render_template("static/html/limesurvey_edit.html", context)
@@ -286,6 +306,8 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.survey_id = data.get("survey_id")
         self.limesurvey_url = data.get("limesurvey_url")
+        self.api_username = data.get("api_username")
+        self.api_password = data.get("api_password")
         self.anonymous_survey = bool(data.get("anonymous_survey"))
 
     def get_survey_summary(self) -> dict:
@@ -414,13 +436,13 @@ class LimeSurveyXBlock(XBlock):
                 settings, "LIMESURVEY_LOGIN_ATTEMPTS_TIMEOUT", 5,
             )
         )
-        if login_attempts_exceeded:
-            raise ExceededLoginAttempts
+        # if login_attempts_exceeded:
+        #     raise ExceededLoginAttempts
 
         self.last_login_attempt = datetime.now()
-
-        limesurvey_api_user = getattr(settings, "LIMESURVEY_API_USER", None)
-        limesurvey_api_password = getattr(settings, "LIMESURVEY_API_PASSWORD", None)
+        import pudb; pudb.set_trace()
+        limesurvey_api_user = self.api_username or getattr(settings, "LIMESURVEY_API_USER", None)
+        limesurvey_api_password = self.api_password or getattr(settings, "LIMESURVEY_API_PASSWORD", None)
         if not limesurvey_api_user or not limesurvey_api_password:
             raise MisconfiguredLimeSurveyService("LimeSurvey API user or password not configured")
 

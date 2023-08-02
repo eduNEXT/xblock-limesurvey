@@ -31,6 +31,20 @@
       </div>
       <span class="tip setting-help"> {{ limesurvey_url_field.help }} </span>
     </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="limesurvey_api_username">LimeSurvey API username</label>
+        <input class="input setting-input" name="limesurvey_api_username" id="limesurvey_api_username" value="{{api_username}}" type="text" />
+      </div>
+      <span class="tip setting-help"> {{ api_username_field.help }} </span>
+    </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="limesurvey_api_password">LimeSurvey API password</label>
+        <input class="input setting-input" name="limesurvey_api_password" id="limesurvey_api_password" value="{{api_password}}" type="text" />
+      </div>
+      <span class="tip setting-help"> {{ api_password_field.help }} </span>
+    </li>
   </ul>
 
   <div class="xblock-actions">
