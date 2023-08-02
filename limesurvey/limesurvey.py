@@ -107,13 +107,19 @@ class LimeSurveyXBlock(XBlock):
     display_name = String(
         display_name="Display Name",
         default="LimeSurvey",
+        help="""The display name for this component. Please, use a distinctive name, as it will be
+        used to identify the component in the LimeSurvey tab of the instructor dashboard when enabled.
+        """,
         scope=Scope.settings
     )
 
     survey_id = Integer(
         default=0,
         scope=Scope.settings,
-        help="The ID of the survey to be embedded",
+        help="""The ID of the survey to be embedded. You can find the ID in the URL of the survey.
+        For example, if the URL is https://limesurvey.example.com/index.php/123456?lang=en,
+        the survey ID is 123456.
+        """,
     )
 
     limesurvey_url = String(
@@ -121,14 +127,16 @@ class LimeSurveyXBlock(XBlock):
         default="",
         scope=Scope.settings,
         help="""
-        The URL of the LimeSurvey installation without the trailing slash.
-        If not set, it will be taken from the service configurations.""",
+        The URL of the LimeSurvey installation with the HTTP scheme and without the trailing slash.
+        If not set, it will be taken from the service configurations. Here is an example:
+        https://limesurvey.example.com
+        """,
     )
 
     anonymous_survey = Boolean(
         default=False,
         scope=Scope.settings,
-        help="Whether the survey is anonymous or not.",
+        help="Whether the survey is anonymous or not. If anonymous, the user will not be added as participant.",
     )
 
     session_key = String(
@@ -251,6 +259,7 @@ class LimeSurveyXBlock(XBlock):
             "limesurvey_url": self.limesurvey_url,
             "survey_id": self.survey_id,
             "anonymous_survey": self.anonymous_survey,
+            "display_name_field": self.fields["display_name"],
             "survey_id_field": self.fields["survey_id"],
             "anonymous_survey_field": self.fields["anonymous_survey"],
             "limesurvey_url_field": self.fields["limesurvey_url"],

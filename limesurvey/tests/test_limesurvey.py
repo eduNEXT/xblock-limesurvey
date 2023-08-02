@@ -184,6 +184,7 @@ class TestLimeSurveyXBlock(TestCase):
             "survey_id_field": self.xblock.fields["survey_id"],
             "anonymous_survey_field": self.xblock.fields["anonymous_survey"],
             "limesurvey_url_field": self.xblock.fields["limesurvey_url"],
+            "display_name_field": self.xblock.fields["display_name"],
         }
 
         self.xblock.studio_view()
