@@ -208,7 +208,7 @@ class LimeSurveyXBlock(XBlock):
         if not limesurvey_url:
             raise MisconfiguredLimeSurveyService("LIMESURVEY_URL is not set in your service configurations.")
 
-        self.survey_url = f"{limesurvey_url}/{self.survey_id}"
+        self.survey_url = f"{limesurvey_url}/index.php/{self.survey_id}"
         self.set_session_key()
 
         if not self.anonymous_survey:
