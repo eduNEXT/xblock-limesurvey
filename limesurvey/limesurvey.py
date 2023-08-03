@@ -449,11 +449,10 @@ class LimeSurveyXBlock(XBlock):
                 settings, "LIMESURVEY_LOGIN_ATTEMPTS_TIMEOUT", 5,
             )
         )
-        # if login_attempts_exceeded:
-        #     raise ExceededLoginAttempts
+        if login_attempts_exceeded:
+            raise ExceededLoginAttempts
 
         self.last_login_attempt = datetime.now()
-        import pudb; pudb.set_trace()
         limesurvey_api_user = self.api_username or getattr(settings, "LIMESURVEY_API_USER", None)
         limesurvey_api_password = self.api_password or getattr(settings, "LIMESURVEY_API_PASSWORD", None)
         if not limesurvey_api_user or not limesurvey_api_password:
