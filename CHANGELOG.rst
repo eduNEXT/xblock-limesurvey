@@ -14,7 +14,7 @@ Change Log
 Unreleased
 **********
 
-*
+* Add better field descriptions in the studio edit view.
 
 0.4.0 - 2023-07-19
 **********************************************
