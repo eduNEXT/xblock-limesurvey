@@ -88,7 +88,17 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.display_name = "Test LimeSurvey"
         self.xblock.survey_id = "test-survey-id"
         self.xblock.limesurvey_url = "test-limesurvey-url"
+        self.xblock.api_username = "test-api-username"
+        self.xblock.api_password = "test-api-password"
         self.xblock.anonymous_survey = True
+        self.xblock.fields = {
+            "survey_id": "test-survey-id",
+            "display_name": "Test LimeSurvey",
+            "anonymous_survey": True,
+            "limesurvey_url": "test-limesurvey-url",
+            "api_username": "test-api-username",
+            "api_password": "test-api-password",
+        }
 
     @patch("limesurvey.limesurvey.Fragment")
     def test_student_view_with_survey(self, _):
@@ -170,21 +180,19 @@ class TestLimeSurveyXBlock(TestCase):
         Expected result:
             - The studio view is set up for the render.
         """
-        self.xblock.fields = {
-            "survey_id": "test-survey-id",
-            "display_name": "Test LimeSurvey",
-            "anonymous_survey": True,
-            "limesurvey_url": self.xblock.limesurvey_url,
-        }
         expected_context = {
             "survey_id": self.xblock.survey_id,
             "display_name": self.xblock.display_name,
             "limesurvey_url": self.xblock.limesurvey_url,
             "anonymous_survey": self.xblock.anonymous_survey,
+            "api_username": self.xblock.api_username,
+            "api_password": self.xblock.api_password,
             "survey_id_field": self.xblock.fields["survey_id"],
             "anonymous_survey_field": self.xblock.fields["anonymous_survey"],
             "limesurvey_url_field": self.xblock.fields["limesurvey_url"],
             "display_name_field": self.xblock.fields["display_name"],
+            "api_username_field": self.xblock.fields["api_username"],
+            "api_password_field": self.xblock.fields["api_password"],
         }
 
         self.xblock.studio_view()
@@ -201,9 +209,7 @@ class TestLimeSurveyXBlock(TestCase):
         Expected result:
             - The instructor view is set up for the render.
         """
-        expected_context = {
-            "limesurvey_url": getattr(settings, "LIMESURVEY_URL", None),
-        }
+        expected_context = {}
 
         self.xblock.instructor_view({})
 
@@ -226,6 +232,12 @@ class TestLimeSurveyUtilities(TestCase):
         self.xblock = LimeSurveyXBlock(runtime=Mock(), field_data=Mock(), scope_ids=Mock())
         self.xblock.session_key = "test-session-key"
         self.xblock.survey_id = "test-survey-id"
+        self.xblock.display_name = "Test LimeSurvey"
+        self.xblock.survey_id = "test-survey-id"
+        self.xblock.limesurvey_url = "https://test-limesurvey-internal-api.com"
+        self.xblock.limesurvey_internal_api = "https://test-limesurvey-internal-api.com"
+        self.xblock.api_username = "test-api-username"
+        self.xblock.api_password = "test-api-password"
 
     @patch("limesurvey.limesurvey.uuid")
     @patch("limesurvey.limesurvey.requests")
@@ -286,7 +298,7 @@ class TestLimeSurveyUtilities(TestCase):
         Check requests to the LimeSurvey API are made correctly.
 
         Expected result:
-            - A request is made to the LimeSurvey API.
+            - A request is made to the LimeSurvey API using the Xblock LimeSurvey API URL.
             - The request is made with the correct parameters.
             - The response is returned.
         """
@@ -298,7 +310,7 @@ class TestLimeSurveyUtilities(TestCase):
         response = self.xblock.call_procedure(method, *params, get_session_key=get_session_key)
 
         requests_mock.post.assert_called_once_with(
-            url=settings.LIMESURVEY_INTERNAL_API,
+            url=self.xblock.limesurvey_internal_api,
             json={
                 "method": method,
                 "params": expected_params,
@@ -311,11 +323,12 @@ class TestLimeSurveyUtilities(TestCase):
     @override_settings(LIMESURVEY_INTERNAL_API=None)
     def test_limesurvey_service_not_configured(self):
         """
-        When the LimeSurvey service is not configured, an exception is raised.
+        When the LimeSurvey service is not configured (in the service nor xblock), an exception is raised.
 
         Expected result:
             - An exception is raised.
         """
+        self.xblock.limesurvey_internal_api = None
         method = "test_rpc_method"
         params = ["test-param-1", "test-param-2"]
 
@@ -413,6 +426,7 @@ class TestLimeSurveyUtilities(TestCase):
 
         Expected result:
             - A request is made to the LimeSurvey API setting the session key.
+            - The API credentials are set with the Xblock values.
         """
         new_session_key = "test-session-key-1"
         self.xblock.last_login_attempt = None
@@ -423,8 +437,8 @@ class TestLimeSurveyUtilities(TestCase):
 
         self.xblock.call_procedure.assert_called_once_with(
             "get_session_key",
-            settings.LIMESURVEY_API_USER,
-            settings.LIMESURVEY_API_PASSWORD,
+            self.xblock.api_username,
+            self.xblock.api_password,
             get_session_key=True,
         )
         self.assertEqual(self.xblock.session_key, new_session_key)
@@ -454,6 +468,8 @@ class TestLimeSurveyUtilities(TestCase):
         Expected result:
             - Since the API user/password is not set then an exception is raised.
         """
+        self.xblock.api_username = None
+        self.xblock.api_password = None
         self.xblock.get_survey_summary = Mock(side_effect=InvalidSessionKey)
         self.xblock.last_login_attempt = None
 
@@ -508,8 +524,8 @@ class TestLimeSurveyUtilities(TestCase):
 
         self.xblock.call_procedure.assert_called_once_with(
             "get_session_key",
-            settings.LIMESURVEY_API_USER,
-            settings.LIMESURVEY_API_PASSWORD,
+            self.xblock.api_username,
+            self.xblock.api_password,
             get_session_key=True,
         )
         self.assertEqual(self.xblock.session_key, new_session_key)

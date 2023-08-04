@@ -11,8 +11,8 @@ def plugin_settings(settings):
     settings.MAKO_TEMPLATE_DIRS_BASE.append(LIMESURVEY_ROOT_DIRECTORY / "templates")
     # Timeout configured to 5s as the average timeout for regular HTTP request
     settings.LIMESURVEY_API_TIMEOUT = 5
-    settings.LIMESURVEY_API_USER = "CHANGE-ME"
-    settings.LIMESURVEY_API_PASSWORD = "CHANGE-ME"
+    settings.LIMESURVEY_API_USER = None
+    settings.LIMESURVEY_API_PASSWORD = None
 
     # Limesurvey backend settings
     settings.LIMESURVEY_COURSEWARE_BACKEND = "limesurvey.edxapp_wrapper.backends.courseware_p_v1"

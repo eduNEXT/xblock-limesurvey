@@ -133,6 +133,32 @@ class LimeSurveyXBlock(XBlock):
         """,
     )
 
+    limesurvey_internal_api = String(
+        default="",
+        scope=Scope.settings,
+        help="""The URL of the LimeSurvey internal API, it's calculated from the LimeSurvey URL
+        after saving the XBlock in Studio. If the LimeSurvey URL is not set,
+        this configuration will be taken from the service configurations.""",
+    )
+
+    api_username = String(
+        display_name="API username",
+        default="",
+        scope=Scope.settings,
+        help="""The username to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
+        If not set, it will be taken from the service configurations.
+        """,
+    )
+
+    api_password = String(
+        display_name="API user's password",
+        default="",
+        scope=Scope.settings,
+        help="""The password to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
+        If not set, it will be taken from the service configurations.
+        """,
+    )
+
     anonymous_survey = Boolean(
         default=False,
         scope=Scope.settings,
@@ -259,10 +285,14 @@ class LimeSurveyXBlock(XBlock):
             "limesurvey_url": self.limesurvey_url,
             "survey_id": self.survey_id,
             "anonymous_survey": self.anonymous_survey,
-            "display_name_field": self.fields["display_name"],
+            "api_username": self.api_username,
+            "api_password": self.api_password,
             "survey_id_field": self.fields["survey_id"],
+            "display_name_field": self.fields["display_name"],
             "anonymous_survey_field": self.fields["anonymous_survey"],
             "limesurvey_url_field": self.fields["limesurvey_url"],
+            "api_username_field": self.fields["api_username"],
+            "api_password_field": self.fields["api_password"],
         }
 
         html = self.render_template("static/html/limesurvey_edit.html", context)
@@ -286,6 +316,11 @@ class LimeSurveyXBlock(XBlock):
         self.display_name = data.get("display_name")
         self.survey_id = data.get("survey_id")
         self.limesurvey_url = data.get("limesurvey_url")
+        if self.limesurvey_url:
+            self.limesurvey_url = self.limesurvey_url.rstrip("/")
+            self.limesurvey_internal_api = f"{self.limesurvey_url}/admin/remotecontrol"
+        self.api_username = data.get("api_username", "")
+        self.api_password = data.get("api_password", "")
         self.anonymous_survey = bool(data.get("anonymous_survey"))
 
     def get_survey_summary(self) -> dict:
@@ -418,9 +453,8 @@ class LimeSurveyXBlock(XBlock):
             raise ExceededLoginAttempts
 
         self.last_login_attempt = datetime.now()
-
-        limesurvey_api_user = getattr(settings, "LIMESURVEY_API_USER", None)
-        limesurvey_api_password = getattr(settings, "LIMESURVEY_API_PASSWORD", None)
+        limesurvey_api_user = self.api_username or getattr(settings, "LIMESURVEY_API_USER", None)
+        limesurvey_api_password = self.api_password or getattr(settings, "LIMESURVEY_API_PASSWORD", None)
         if not limesurvey_api_user or not limesurvey_api_password:
             raise MisconfiguredLimeSurveyService("LimeSurvey API user or password not configured")
 
@@ -450,9 +484,11 @@ class LimeSurveyXBlock(XBlock):
             LimeSurveyAPIError: If the API call fails.
             An exception from API_EXCEPTIONS_MAPPING if matches the error message.
         """
-        limesurvey_api_url = getattr(settings, "LIMESURVEY_INTERNAL_API", None)
+        limesurvey_api_url = self.limesurvey_internal_api or getattr(settings, "LIMESURVEY_INTERNAL_API", None)
         if not limesurvey_api_url:
-            raise LimeSurveyAPIError("LIMESURVEY_INTERNAL_API not set")
+            raise LimeSurveyAPIError(
+                "LimeSurvey URL for the service API is not set in your service configurations or in the XBlock."
+            )
 
         if get_session_key:
             params = [*params]
@@ -489,7 +525,6 @@ class LimeSurveyXBlock(XBlock):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        context.update({"limesurvey_url": getattr(settings, "LIMESURVEY_URL", None)})
         html = self.render_template("static/html/instructor.html", context)
         frag = Fragment(html)
         frag.add_css(self.resource_string("static/css/instructor.css"))
