@@ -15,6 +15,7 @@ Unreleased
 **********
 
 * Add better field descriptions in the studio edit view.
+* Add support for older LimeSurvey versions (< 6.1.0).
 
 0.4.0 - 2023-07-19
 **********************************************
