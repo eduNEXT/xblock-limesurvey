@@ -318,7 +318,7 @@ class LimeSurveyXBlock(XBlock):
         self.limesurvey_url = data.get("limesurvey_url")
         if self.limesurvey_url:
             self.limesurvey_url = self.limesurvey_url.rstrip("/")
-            self.limesurvey_internal_api = f"{self.limesurvey_url}/admin/remotecontrol"
+            self.limesurvey_internal_api = f"{self.limesurvey_url}/index.php/admin/remotecontrol"
         self.api_username = data.get("api_username", "")
         self.api_password = data.get("api_password", "")
         self.anonymous_survey = bool(data.get("anonymous_survey"))
