@@ -14,6 +14,15 @@ Change Log
 Unreleased
 **********
 
+0.5.1 - 2023-08-08
+**********************************************
+
+Changed
+=======
+
+* Use index.php prefix when calling the internal LimeSurvey API.
+* Call LimeSurvey API when the survey is anonymous only.
+
 0.5.0 - 2023-08-04
 **********************************************
 
