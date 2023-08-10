@@ -11,19 +11,21 @@ import pkg_resources
 import pytz
 import requests
 from django.conf import settings
-from django.template import Context, Template
 from django.utils import translation
 from web_fragments.fragment import Fragment
 from xblock.core import XBlock
-from xblock.fields import DateTime, Integer, Scope, String, Boolean
+from xblock.fields import Boolean, DateTime, Integer, Scope, String
 from xblockutils.resources import ResourceLoader
 
+from limesurvey.utils import _
+
 log = logging.getLogger(__name__)
+loader = ResourceLoader(__name__)
 
 class LimeSurveyAPIError(Exception):
     """Exception raised when the LimeSurvey API returns an error."""
 
-    def __init__(self, message="LimeSurvey API error."):
+    def __init__(self, message=_("LimeSurvey API error.")):
         """Initialize the exception.
 
         args:
@@ -34,7 +36,7 @@ class LimeSurveyAPIError(Exception):
 class NoParticipantFound(LimeSurveyAPIError):
     """Exception raised when no participant is found for the user."""
 
-    def __init__(self, message="No participant in the survey."):
+    def __init__(self, message=_("No participant in the survey.")):
         """Initialize the exception.
 
         args:
@@ -46,7 +48,7 @@ class NoParticipantFound(LimeSurveyAPIError):
 class ExceededLoginAttempts(LimeSurveyAPIError):
     """Exception raised when the user has exceeded the number of login attempts."""
 
-    def __init__(self, message="Exceeded the number of login attempts."):
+    def __init__(self, message=_("Exceeded the number of login attempts.")):
         """Initialize the exception.
 
         args:
@@ -58,7 +60,7 @@ class ExceededLoginAttempts(LimeSurveyAPIError):
 class InvalidSessionKey(LimeSurveyAPIError):
     """Exception raised when the session key is expired."""
 
-    def __init__(self, message="Invalid session key."):
+    def __init__(self, message=_("Invalid session key.")):
         """Initialize the exception.
 
         args:
@@ -71,7 +73,7 @@ class InvalidSessionKey(LimeSurveyAPIError):
 class InvalidCredentials(LimeSurveyAPIError):
     """Exception raised when the credentials are invalid."""
 
-    def __init__(self, message="Invalid credentials to authenticate with LimeSurvey API."):
+    def __init__(self, message=_("Invalid credentials to authenticate with LimeSurvey API.")):
         """Initialize the exception.
 
         args:
@@ -83,7 +85,7 @@ class InvalidCredentials(LimeSurveyAPIError):
 class MisconfiguredLimeSurveyService(Exception):
     """Exception raised when the survey service is misconfigured."""
 
-    def __init__(self, message="Survey service is misconfigured."):
+    def __init__(self, message=_("Survey service is misconfigured.")):
         """Initialize the exception.
 
         args:
@@ -99,94 +101,108 @@ API_EXCEPTIONS_MAPPING["Invalid user name or password"] = InvalidCredentials
 
 
 @XBlock.wants("user")
+@XBlock.needs("i18n")
 class LimeSurveyXBlock(XBlock):
     """
     LimeSurvey XBlock provides a way to embed surveys from LimeSurvey in a course.
     """
 
     display_name = String(
-        display_name="Display Name",
+        display_name=_("Display name"),
         default="LimeSurvey",
-        help="""The display name for this component. Please, use a distinctive name, as it will be
-        used to identify the component in the LimeSurvey tab of the instructor dashboard when enabled.
-        """,
-        scope=Scope.settings
+        scope=Scope.settings,
+        help=_(
+            "The display name for this component. Please, use a distinctive name, "
+            "as it will be used to identify the component in the LimeSurvey tab of "
+            "the instructor dashboard when enabled."
+        ),
     )
 
     survey_id = Integer(
         default=0,
         scope=Scope.settings,
-        help="""The ID of the survey to be embedded. You can find the ID in the URL of the survey.
-        For example, if the URL is https://limesurvey.example.com/index.php/123456?lang=en,
-        the survey ID is 123456.
-        """,
+        help=_(
+            "The ID of the survey to be embedded. You can find the ID in the URL of "
+            "the survey. For example, if the URL is https://limesurvey.example.com/index.php/123456?lang=en"
+            ", the survey ID is 123456."
+        ),
     )
 
     limesurvey_url = String(
-        display_name="LimeSurvey URL",
+        display_name=_("LimeSurvey URL"),
         default="",
         scope=Scope.settings,
-        help="""
-        The URL of the LimeSurvey installation with the HTTP scheme and without the trailing slash.
-        If not set, it will be taken from the service configurations. Here is an example:
-        https://limesurvey.example.com
-        """,
+        help=_(
+            "The URL of the LimeSurvey installation with the HTTP scheme and without "
+            "the trailing slash. If not set, it will be taken from the service "
+            "configurations. Here is an example: https://limesurvey.example.com"
+        ),
     )
 
     limesurvey_internal_api = String(
         default="",
         scope=Scope.settings,
-        help="""The URL of the LimeSurvey internal API, it's calculated from the LimeSurvey URL
-        after saving the XBlock in Studio. If the LimeSurvey URL is not set,
-        this configuration will be taken from the service configurations.""",
+        help=_(
+            "The URL of the LimeSurvey internal API, it's calculated from the "
+            "LimeSurvey URL after saving the XBlock in Studio. If the LimeSurvey "
+            "URL is not set, this configuration will be taken from the service "
+            "configurations."
+        ),
     )
 
     api_username = String(
-        display_name="API username",
+        display_name=_("API username"),
         default="",
         scope=Scope.settings,
-        help="""The username to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
-        If not set, it will be taken from the service configurations.
-        """,
+        help=_(
+            "The username to authenticate with your LimeSurvey installation you set "
+            "in LimeSurvey URL. If not set, it will be taken from the service "
+            "configurations."
+        ),
     )
 
     api_password = String(
-        display_name="API user's password",
+        display_name=_("API user's password"),
         default="",
         scope=Scope.settings,
-        help="""The password to authenticate with your LimeSurvey installation you set in LimeSurvey URL.
-        If not set, it will be taken from the service configurations.
-        """,
+        help=_(
+            "The password to authenticate with your LimeSurvey installation you set "
+            "in LimeSurvey URL. If not set, it will be taken from the service "
+            "configurations."
+        ),
     )
 
     anonymous_survey = Boolean(
         default=False,
         scope=Scope.settings,
-        help="Whether the survey is anonymous or not. If anonymous, the user will not be added as participant.",
+        help=_(
+            "Whether the survey is anonymous or not. If anonymous, the user will not "
+            "be added as participant."
+        ),
     )
 
     session_key = String(
         default=None,
         scope=Scope.user_state_summary,
-        help="Authentication key for the LimeSurvey API",
+        help=_("Authentication key for the LimeSurvey API"),
     )
 
     survey_url = String(
         default=None,
         scope=Scope.user_state_summary,
-        help="The URL of the survey for the current student.",
+        help=_("The URL of the survey for the current student."),
     )
 
     access_code = String(
         default=None,
         scope=Scope.user_state,
-        help="The access code of the user for the survey",
+        help=_("The access code of the user for the survey"),
     )
 
     last_login_attempt = DateTime(
         default=None,
         scope=Scope.user_state,
-        help="The time of the last login attempt",
+        help=_("The time of the last login attempt"),
     )
 
     def resource_string(self, path):
@@ -195,7 +211,9 @@ class LimeSurveyXBlock(XBlock):
         return data.decode("utf8")
 
     def render_template(self, template_path, context=None) -> str:
-        """Render the template with the provided context.
+        """
+        Render a template with the given context. The template is translated
+        according to the user's language.
 
         args:
             template_path: The path to the template
@@ -204,9 +222,9 @@ class LimeSurveyXBlock(XBlock):
         returns:
             The rendered template
         """
-        template_str = self.resource_string(template_path)
-        template = Template(template_str)
-        return template.render(Context(context))
+        return loader.render_django_template(
+            template_path, context, i18n_service=self.runtime.service(self, 'i18n')
+        )
 
     def user_is_staff(self, user) -> bool:
         """
@@ -263,8 +281,9 @@ class LimeSurveyXBlock(XBlock):
             "show_survey": show_survey,
             "error_message": error_message,
         }
-        html = self.render_template("static/html/limesurvey.html", context)
-        frag = Fragment(html)
+
+        frag = Fragment()
+        frag.add_content(self.render_template("static/html/limesurvey.html", context))
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
         # Add i18n js
@@ -295,14 +314,18 @@ class LimeSurveyXBlock(XBlock):
             "api_password_field": self.fields["api_password"],
         }
 
-        html = self.render_template("static/html/limesurvey_edit.html", context)
-        frag = Fragment(html)
+        frag = Fragment()
+        frag.add_content(self.render_template(
+            "static/html/limesurvey_edit.html", context
+        ))
         frag.add_css(self.resource_string("static/css/limesurvey.css"))
 
         # Add i18n js
         statici18n_js_url = self._get_statici18n_js_url()
         if statici18n_js_url:
-            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+            frag.add_javascript_url(
+                self.runtime.local_resource_url(self, statici18n_js_url)
+            )
 
         frag.add_javascript(self.resource_string("static/js/src/limesurveyEdit.js"))
         frag.initialize_js("LimeSurveyXBlock")
@@ -456,7 +479,9 @@ class LimeSurveyXBlock(XBlock):
         limesurvey_api_user = self.api_username or getattr(settings, "LIMESURVEY_API_USER", None)
         limesurvey_api_password = self.api_password or getattr(settings, "LIMESURVEY_API_PASSWORD", None)
         if not limesurvey_api_user or not limesurvey_api_password:
-            raise MisconfiguredLimeSurveyService("LimeSurvey API user or password not configured")
+            raise MisconfiguredLimeSurveyService(
+                _("LimeSurvey API user or password not configured")
+            )
 
         session_key = self.call_procedure(
             "get_session_key",
@@ -486,9 +511,10 @@ class LimeSurveyXBlock(XBlock):
         """
         limesurvey_api_url = self.limesurvey_internal_api or getattr(settings, "LIMESURVEY_INTERNAL_API", None)
         if not limesurvey_api_url:
-            raise LimeSurveyAPIError(
-                "LimeSurvey URL for the service API is not set in your service configurations or in the XBlock."
-            )
+            raise LimeSurveyAPIError(_(
+                "LimeSurvey URL for the service API is not set in "
+                "your service configurations or in the XBlock."
+            ))
 
         if get_session_key:
             params = [*params]
@@ -525,14 +551,16 @@ class LimeSurveyXBlock(XBlock):
         """
         The studio view of the LimeSurveyXBlock, shown to instructors.
         """
-        html = self.render_template("static/html/instructor.html", context)
-        frag = Fragment(html)
+        frag = Fragment()
+        frag.add_content(self.render_template("static/html/instructor.html", context))
         frag.add_css(self.resource_string("static/css/instructor.css"))
 
         # Add i18n js
         statici18n_js_url = self._get_statici18n_js_url()
         if statici18n_js_url:
-            frag.add_javascript_url(self.runtime.local_resource_url(self, statici18n_js_url))
+            frag.add_javascript_url(
+                self.runtime.local_resource_url(self, statici18n_js_url)
+            )
 
         frag.add_javascript(self.resource_string("static/js/src/instructor.js"))
         frag.initialize_js("LimeSurveyTab")
@@ -569,7 +597,6 @@ class LimeSurveyXBlock(XBlock):
         text_js = 'public/js/translations/{locale_code}/text.js'
         lang_code = locale_code.split('-')[0]
         for code in (locale_code, lang_code, 'en'):
-            loader = ResourceLoader(__name__)
             if pkg_resources.resource_exists(
                     loader.module_name, text_js.format(locale_code=code)):
                 return text_js.format(locale_code=code)

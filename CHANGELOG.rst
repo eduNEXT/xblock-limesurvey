@@ -14,6 +14,20 @@ Change Log
 Unreleased
 **********
 
+0.6.0 - 2023-08-10
+**********************************************
+
+Added
+=====
+
+* Add translations of es_419 and es_ES in the xblock
+
+Changed
+=======
+
+* Update README with new fields and important note
+
+
 0.5.1 - 2023-08-08
 **********************************************
 
@@ -22,6 +36,7 @@ Changed
 
 * Use index.php prefix when calling the internal LimeSurvey API.
 * Call LimeSurvey API when the survey is anonymous only.
+
 
 0.5.0 - 2023-08-04
 **********************************************
@@ -32,6 +47,7 @@ Added
 * Better field descriptions in the studio edit view.
 * Support for older LimeSurvey versions (< 6.1.0).
 * Support for LimeSurvey API configurable credentials.
+
 
 0.4.1 - 2023-07-25
 **********************************************

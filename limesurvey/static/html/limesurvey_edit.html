@@ -1,59 +1,61 @@
+{% load i18n %}
+
 <div class="wrapper-comp-settings is-active editor-with-buttons" id="settings-tab">
   <ul class="list-input settings-list">
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_display_name">Display name</label>
+        <label class="label setting-label" for="limesurvey_display_name">{% trans "Display name" %}</label>
         <input class="input setting-input" name="limesurvey_display_name" id="limesurvey_display_name" value="{{display_name}}" type="text" />
       </div>
-      <span class="tip setting-help"> {{ display_name_field.help }} </span>
+      <span class="tip setting-help"> {% trans display_name_field.help %} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_survey_id">Survey ID</label>
+        <label class="label setting-label" for="limesurvey_survey_id">{% trans "Survey ID" %}</label>
         <input class="input setting-input" name="limesurvey_survey_id" id="limesurvey_survey_id" value="{{survey_id}}" type="text" />
       </div>
-      <span class="tip setting-help"> {{ survey_id_field.help }} </span>
+      <span class="tip setting-help"> {% trans survey_id_field.help %} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_anonymous_survey">Anonymous survey</label>
+        <label class="label setting-label" for="limesurvey_anonymous_survey">{% trans "Anonymous survey" %}</label>
         <select id="limesurvey_anonymous_survey" class="input setting-input" name="limesurvey_anonymous_survey" >
-            <option value=1 {% if anonymous_survey %} selected{% endif %}> True </option>
-            <option value=0 {% if not anonymous_survey %} selected{% endif %}> False </option>
+            <option value=1 {% if anonymous_survey %} selected{% endif %}>{% trans "True" %}</option>
+            <option value=0 {% if not anonymous_survey %} selected{% endif %}>{% trans "False" %}</option>
         </select>
       </div>
-      <span class="tip setting-help"> {{ anonymous_survey_field.help }} </span>
+      <span class="tip setting-help"> {% trans anonymous_survey_field.help %} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_url">LimeSurvey URL</label>
+        <label class="label setting-label" for="limesurvey_url">{% trans "LimeSurvey URL" %}</label>
         <input class="input setting-input" name="limesurvey_url" id="limesurvey_url" value="{{limesurvey_url}}" type="text" />
       </div>
-      <span class="tip setting-help"> {{ limesurvey_url_field.help }} </span>
+      <span class="tip setting-help"> {% trans limesurvey_url_field.help %} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_api_username">LimeSurvey API username</label>
+        <label class="label setting-label" for="limesurvey_api_username">{% trans "LimeSurvey API username" %}</label>
         <input class="input setting-input" name="limesurvey_api_username" id="limesurvey_api_username" value="{{api_username}}" type="text" />
       </div>
-      <span class="tip setting-help"> {{ api_username_field.help }} </span>
+      <span class="tip setting-help"> {% trans api_username_field.help %} </span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_api_password">LimeSurvey API password</label>
+        <label class="label setting-label" for="limesurvey_api_password">{% trans "LimeSurvey API password" %}</label>
         <input class="input setting-input" name="limesurvey_api_password" id="limesurvey_api_password" value="{{api_password}}" type="text" />
       </div>
-      <span class="tip setting-help"> {{ api_password_field.help }} </span>
+      <span class="tip setting-help"> {% trans api_password_field.help %} </span>
     </li>
   </ul>
 
   <div class="xblock-actions">
     <ul>
       <li class="action-item">
-        <a href="#" class="button action-primary save-button">Save</a>
+        <a href="#" class="button action-primary save-button">{% trans "Save" %}</a>
       </li>
       <li class="action-item">
-        <a href="#" class="button cancel-button">Cancel</a>
+        <a href="#" class="button cancel-button">{% trans "Cancel" %}</a>
       </li>
     </ul>
   </div>

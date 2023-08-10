@@ -1,0 +1,205 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+# Translators:
+# Bryann Valderrama <bryann.valderrama@edunext.co>, 2023
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-09 18:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Bryann Valderrama <bryann.valderrama@edunext.co>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: limesurvey.py:28
+msgid "LimeSurvey API error."
+msgstr "Error de la API de LimeSurvey."
+
+#: limesurvey.py:39
+msgid "No participant in the survey."
+msgstr "No hay participantes en la encuesta."
+
+#: limesurvey.py:51
+msgid "Exceeded the number of login attempts."
+msgstr "Se superó el número de intentos de inicio de sesión."
+
+#: limesurvey.py:63
+msgid "Invalid session key."
+msgstr "Clave de sesión no válida."
+
+#: limesurvey.py:76
+msgid "Invalid credentials to authenticate with LimeSurvey API."
+msgstr "Credenciales no válidas para autenticarse con la API de LimeSurvey."
+
+#: limesurvey.py:88
+msgid "Survey service is misconfigured."
+msgstr "El servicio de encuesta está mal configurado."
+
+#: limesurvey.py:111 static/html/limesurvey_edit.html:7
+msgid "Display name"
+msgstr "Nombre a mostrar"
+
+#: limesurvey.py:115
+msgid ""
+"The display name for this component. Please, use a distinctive name, as it "
+"will be used to identify the component in the LimeSurvey tab of the "
+"instructor dashboard when enabled."
+msgstr ""
+"El nombre a mostrar para este componente. Por favor, use un nombre distintivo, "
+"ya que se usará para identificar el componente en la pestaña de LimeSurvey del "
+"panel de control del instructor cuando esté habilitado."
+
+#: limesurvey.py:125
+msgid ""
+"The ID of the survey to be embedded. You can find the ID in the URL of the "
+"survey. For example, if the URL is https://limesurvey.example.com/index."
+"php/123456?lang=en, the survey ID is 123456."
+msgstr ""
+"El ID de la encuesta a incrustar. Puede encontrar el ID en la URL de la "
+"encuesta. Por ejemplo, si la URL es https://limesurvey.example.com/index."
+"php/123456?lang=en, el ID de la encuesta es 123456."
+
+#: limesurvey.py:132 static/html/limesurvey_edit.html:31
+msgid "LimeSurvey URL"
+msgstr "URL de LimeSurvey"
+
+#: limesurvey.py:136
+msgid ""
+"The URL of the LimeSurvey installation with the HTTP scheme and without the "
+"trailing slash. If not set, it will be taken from the service "
+"configurations. Here is an example: https://limesurvey.example.com"
+msgstr ""
+"La URL de la instalación de LimeSurvey con el esquema HTTP y sin la barra "
+"final. Si no se establece, se tomará de las configuraciones del servicio. "
+"Aquí hay un ejemplo: https://limesurvey.example.com"
+
+#: limesurvey.py:146
+msgid ""
+"The URL of the LimeSurvey internal API, it's calculated from the LimeSurvey "
+"URL after saving the XBlock in Studio. If the LimeSurvey URL is not set, "
+"this configuration will be taken from the service configurations."
+msgstr ""
+"La URL de la API interna de LimeSurvey, se calcula a partir de la URL de "
+"LimeSurvey después de guardar el XBlock en Studio. Si la URL de LimeSurvey no "
+"está establecida, esta configuración se tomará de las configuraciones del "
+"servicio."
+
+#: limesurvey.py:154
+msgid "API username"
+msgstr "Nombre de usuario de la API"
+
+#: limesurvey.py:158
+msgid ""
+"The username to authenticate with your LimeSurvey installation you set in "
+"LimeSurvey URL. If not set, it will be taken from the service configurations."
+msgstr ""
+"El nombre de usuario para autenticarse con su instalación de LimeSurvey que "
+"estableció en la URL de LimeSurvey. Si no se establece, se tomará de las "
+"configuraciones del servicio."
+
+#: limesurvey.py:165
+msgid "API user's password"
+msgstr "Contraseña del usuario de la API"
+
+#: limesurvey.py:169
+msgid ""
+"The password to authenticate with your LimeSurvey installation you set in "
+"LimeSurvey URL. If not set, it will be taken from the service configurations."
+msgstr ""
+"La contraseña para autenticarse con su instalación de LimeSurvey que "
+"estableció en la URL de LimeSurvey. Si no se establece, se tomará de las "
+"configuraciones del servicio."
+
+#: limesurvey.py:179
+msgid ""
+"Whether the survey is anonymous or not. If anonymous, the user will not be "
+"added as participant."
+msgstr ""
+"Si la encuesta es anónima o no. Si es anónima, el usuario no se agregará como "
+"participante."
+
+#: limesurvey.py:187
+msgid "Authentication key for the LimeSurvey API"
+msgstr "Clave de autenticación para la API de LimeSurvey"
+
+#: limesurvey.py:193
+msgid "The URL of the survey for the current student."
+msgstr "La URL de la encuesta para el estudiante actual."
+
+#: limesurvey.py:199
+msgid "The access code of the user for the survey"
+msgstr "El código de acceso del usuario para la encuesta"
+
+#: limesurvey.py:205
+msgid "The time of the last login attempt"
+msgstr "La hora del último intento de inicio de sesión"
+
+#: limesurvey.py:601
+msgid "Dummy"
+msgstr ""
+
+#: static/html/instructor.html:11
+msgid "Component name"
+msgstr "Nombre del componente"
+
+#: static/html/instructor.html:16
+msgid "Management Console(s)"
+msgstr "Consola(s) de administración"
+
+#: static/html/instructor.html:28
+msgid "Management Console"
+msgstr "Consola de administración"
+
+#: static/html/limesurvey.html:6
+msgid "The survey can't be rendered due to the following error: "
+msgstr "La encuesta no se puede renderizar debido al siguiente error: "
+
+#: static/html/limesurvey.html:7
+msgid "Please contact the instructor or an administrator."
+msgstr "Por favor, contacte al instructor o a un administrador."
+
+#: static/html/limesurvey.html:18
+msgid "The survey is only visible from the LMS."
+msgstr "La encuesta solo es visible desde el LMS."
+
+#: static/html/limesurvey_edit.html:14
+msgid "Survey ID"
+msgstr "ID de la encuesta"
+
+#: static/html/limesurvey_edit.html:21
+msgid "Anonymous survey"
+msgstr "Encuesta anónima"
+
+#: static/html/limesurvey_edit.html:23
+msgid "True"
+msgstr "Verdadero"
+
+#: static/html/limesurvey_edit.html:24
+msgid "False"
+msgstr "Falso"
+
+#: static/html/limesurvey_edit.html:38
+msgid "LimeSurvey API username"
+msgstr "Nombre de usuario de la API de LimeSurvey"
+
+#: static/html/limesurvey_edit.html:45
+msgid "LimeSurvey API password"
+msgstr "Contraseña de la API de LimeSurvey"
+
+#: static/html/limesurvey_edit.html:55
+msgid "Save"
+msgstr "Guardar"
+
+#: static/html/limesurvey_edit.html:58
+msgid "Cancel"
+msgstr "Cancelar"

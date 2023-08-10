@@ -120,8 +120,12 @@ class TestLimeSurveyXBlock(TestCase):
 
         self.xblock.student_view(show_survey)
 
-        self.xblock.setup_student_view_survey.assert_called_once_with(self.student, self.anonymous_user_id)
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        self.xblock.setup_student_view_survey.assert_called_once_with(
+            self.student, self.anonymous_user_id
+        )
+        self.xblock.render_template.assert_called_once_with(
+            "static/html/limesurvey.html", expected_context,
+        )
 
     @patch("limesurvey.limesurvey.Fragment")
     def test_student_view_survey_with_errors(self, _):
@@ -144,8 +148,12 @@ class TestLimeSurveyXBlock(TestCase):
 
         self.xblock.student_view(show_survey)
 
-        self.xblock.setup_student_view_survey.assert_called_once_with(self.student, self.anonymous_user_id)
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        self.xblock.setup_student_view_survey.assert_called_once_with(
+            self.student, self.anonymous_user_id
+        )
+        self.xblock.render_template.assert_called_once_with(
+            "static/html/limesurvey.html", expected_context,
+        )
 
     @patch("limesurvey.limesurvey.Fragment")
     def test_student_view_from_studio(self, _):
@@ -171,7 +179,10 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.student_view(show_survey)
 
         self.xblock.setup_student_view_survey.assert_not_called()
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        self.xblock.render_template.assert_called_once_with(
+            "static/html/limesurvey.html", expected_context,
+        )
+
 
     def test_studio_view(self):
         """
@@ -198,8 +209,7 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.studio_view()
 
         self.xblock.render_template.assert_called_once_with(
-            "static/html/limesurvey_edit.html",
-            expected_context
+            "static/html/limesurvey_edit.html", expected_context,
         )
 
     def test_instructor_view(self):
@@ -214,8 +224,7 @@ class TestLimeSurveyXBlock(TestCase):
         self.xblock.instructor_view({})
 
         self.xblock.render_template.assert_called_once_with(
-            "static/html/instructor.html",
-            expected_context
+            "static/html/instructor.html", expected_context,
         )
 
 
