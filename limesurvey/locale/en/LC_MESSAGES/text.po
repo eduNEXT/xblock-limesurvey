@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+# Translators:
+# Bryann Valderrama <bryann.valderrama@edunext.co>, 2023
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-10 08:51-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Bryann Valderram <bryann.valderrama@edunext.co>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: limesurvey.py:113 static/html/limesurvey_edit.html:7
+msgid "Display name"
+msgstr ""
+
+#: limesurvey.py:117
+msgid ""
+"The display name for this component. Please, use a distinctive name, as it "
+"will be used to identify the component in the LimeSurvey tab of the "
+"instructor dashboard when enabled."
+msgstr ""
+
+#: limesurvey.py:127
+msgid ""
+"The ID of the survey to be embedded. You can find the ID in the URL of the "
+"survey. For example, if the URL is https://limesurvey.example.com/index."
+"php/123456?lang=en, the survey ID is 123456."
+msgstr ""
+
+#: limesurvey.py:134 static/html/limesurvey_edit.html:31
+msgid "LimeSurvey URL"
+msgstr ""
+
+#: limesurvey.py:138
+msgid ""
+"The URL of the LimeSurvey installation with the HTTP scheme and without the "
+"trailing slash. If not set, it will be taken from the service "
+"configurations. Here is an example: https://limesurvey.example.com"
+msgstr ""
+
+#: limesurvey.py:148
+msgid ""
+"The URL of the LimeSurvey internal API, it's calculated from the LimeSurvey "
+"URL after saving the XBlock in Studio. If the LimeSurvey URL is not set, "
+"this configuration will be taken from the service configurations."
+msgstr ""
+
+#: limesurvey.py:156
+msgid "API username"
+msgstr ""
+
+#: limesurvey.py:160
+msgid ""
+"The username to authenticate with your LimeSurvey installation you set in "
+"LimeSurvey URL. If not set, it will be taken from the service configurations."
+msgstr ""
+
+#: limesurvey.py:167
+msgid "API user's password"
+msgstr ""
+
+#: limesurvey.py:171
+msgid ""
+"The password to authenticate with your LimeSurvey installation you set in "
+"LimeSurvey URL. If not set, it will be taken from the service configurations."
+msgstr ""
+
+#: limesurvey.py:181
+msgid ""
+"Whether the survey is anonymous or not. If anonymous, the user will not be "
+"added as participant."
+msgstr ""
+
+#: limesurvey.py:189
+msgid "Authentication key for the LimeSurvey API"
+msgstr ""
+
+#: limesurvey.py:195
+msgid "The URL of the survey for the current student."
+msgstr ""
+
+#: limesurvey.py:201
+msgid "The access code of the user for the survey"
+msgstr ""
+
+#: limesurvey.py:207
+msgid "The time of the last login attempt"
+msgstr ""
+
+#: limesurvey.py:611
+msgid "Dummy"
+msgstr ""
+
+#: static/html/instructor.html:11
+msgid "Component name"
+msgstr ""
+
+#: static/html/instructor.html:16
+msgid "Management Console(s)"
+msgstr ""
+
+#: static/html/instructor.html:28
+msgid "Management Console"
+msgstr ""
+
+#: static/html/limesurvey.html:6
+msgid "The survey can't be rendered due to the following error: "
+msgstr ""
+
+#: static/html/limesurvey.html:7
+msgid "Please contact the instructor or an administrator."
+msgstr ""
+
+#: static/html/limesurvey.html:18
+msgid "The survey is only visible from the LMS."
+msgstr ""
+
+#: static/html/limesurvey_edit.html:14
+msgid "Survey ID"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:21
+msgid "Anonymous survey"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:23
+msgid "True"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:24
+msgid "False"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:38
+msgid "LimeSurvey API username"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:45
+msgid "LimeSurvey API password"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:55
+msgid "Save"
+msgstr ""
+
+#: static/html/limesurvey_edit.html:58
+msgid "Cancel"
+msgstr ""

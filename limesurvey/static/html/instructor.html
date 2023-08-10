@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="limesurvey-instructor-wrapper"></div>
 <div class="paragon-styles">
     <div class="pgn__data-table-container">
@@ -6,12 +8,12 @@
           <tr role="row">
             <th colspan="1" role="columnheader">
               <span class="d-flex align-items-center"
-                ><span>Component name</span></span
+                ><span>{% trans "Component name" %}</span></span
               >
             </th>
             <th colspan="1" role="columnheader">
               <span class="d-flex align-items-center"
-                ><span>Management Console(s)</span></span
+                ><span>{% trans "Management Console(s)" %}</span></span
               >
             </th>
           </tr>
@@ -23,7 +25,7 @@
             <td role="cell" class="pgn__data-table-cell-wrap">
               <a class="admin-panel" href="{{ url }}/admin/"
                 ><button class="btn btn-primary" ="button">
-                  Management Console
+                  {% trans "Management Console" %}
                 </button></a
               >
             </td>
