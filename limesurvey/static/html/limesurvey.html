@@ -3,7 +3,7 @@
 {% if show_survey %}
     <div class="limesurvey-xblock-wrapper">
         {% if error_message %}
-            <p>{% trans "The survey can't be rendered due to the following error: " %}<b>{{error_message}}</b></p>
+            <p>{% trans "The survey can't be rendered due to the following error: " %}<b>{% trans error_message %}</b></p>
             <p>{% trans "Please contact the instructor or an administrator." %}</p>
         {% else %}
             {% if self.anonymous_survey %}

@@ -25,81 +25,91 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
-#: limesurvey.py:117
+#: limesurvey.py:115
 msgid ""
 "The display name for this component. Please, use a distinctive name, as it "
 "will be used to identify the component in the LimeSurvey tab of the "
 "instructor dashboard when enabled."
 msgstr ""
 
-#: limesurvey.py:127
+#: limesurvey.py:125
 msgid ""
 "The ID of the survey to be embedded. You can find the ID in the URL of the "
 "survey. For example, if the URL is https://limesurvey.example.com/index."
 "php/123456?lang=en, the survey ID is 123456."
 msgstr ""
 
-#: limesurvey.py:134 static/html/limesurvey_edit.html:31
+#: limesurvey.py:132 static/html/limesurvey_edit.html:31
 msgid "LimeSurvey URL"
 msgstr ""
 
-#: limesurvey.py:138
+#: limesurvey.py:136
 msgid ""
 "The URL of the LimeSurvey installation with the HTTP scheme and without the "
 "trailing slash. If not set, it will be taken from the service "
 "configurations. Here is an example: https://limesurvey.example.com"
 msgstr ""
 
-#: limesurvey.py:148
+#: limesurvey.py:146
 msgid ""
 "The URL of the LimeSurvey internal API, it's calculated from the LimeSurvey "
 "URL after saving the XBlock in Studio. If the LimeSurvey URL is not set, "
 "this configuration will be taken from the service configurations."
 msgstr ""
 
-#: limesurvey.py:156
+#: limesurvey.py:154
 msgid "API username"
 msgstr ""
 
-#: limesurvey.py:160
+#: limesurvey.py:158
 msgid ""
 "The username to authenticate with your LimeSurvey installation you set in "
 "LimeSurvey URL. If not set, it will be taken from the service configurations."
 msgstr ""
 
-#: limesurvey.py:167
+#: limesurvey.py:165
 msgid "API user's password"
 msgstr ""
 
-#: limesurvey.py:171
+#: limesurvey.py:169
 msgid ""
 "The password to authenticate with your LimeSurvey installation you set in "
 "LimeSurvey URL. If not set, it will be taken from the service configurations."
 msgstr ""
 
-#: limesurvey.py:181
+#: limesurvey.py:179
 msgid ""
 "Whether the survey is anonymous or not. If anonymous, the user will not be "
 "added as participant."
 msgstr ""
 
-#: limesurvey.py:189
+#: limesurvey.py:187
 msgid "Authentication key for the LimeSurvey API"
 msgstr ""
 
-#: limesurvey.py:195
+#: limesurvey.py:193
 msgid "The URL of the survey for the current student."
 msgstr ""
 
-#: limesurvey.py:201
+#: limesurvey.py:199
 msgid "The access code of the user for the survey"
 msgstr ""
 
-#: limesurvey.py:207
+#: limesurvey.py:205
 msgid "The time of the last login attempt"
 msgstr ""
 
-#: limesurvey.py:611
+#: limesurvey.py:493
+msgid "LimeSurvey API user or password not configured"
+msgstr ""
+
+#: limesurvey.py:525
+msgid ""
+"LimeSurvey URL for the service API is not set in your service configurations "
+"or in the XBlock."
+msgstr ""
+
+#: limesurvey.py:625
 msgid "Dummy"
 msgstr ""
 
