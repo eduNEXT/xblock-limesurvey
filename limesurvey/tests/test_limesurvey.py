@@ -100,8 +100,9 @@ class TestLimeSurveyXBlock(TestCase):
             "api_password": "test-api-password",
         }
 
+    @patch("limesurvey.limesurvey.loader.render_django_template")
     @patch("limesurvey.limesurvey.Fragment")
-    def test_student_view_with_survey(self, _):
+    def test_student_view_with_survey(self, _, render_mock: Mock):
         """
         Check student view is rendered correctly.
 
@@ -117,14 +118,22 @@ class TestLimeSurveyXBlock(TestCase):
             "show_survey": show_survey,
             "error_message": None,
         }
+        render_mock.return_value = "<div>Mocked Content</div>"
 
         self.xblock.student_view(show_survey)
 
-        self.xblock.setup_student_view_survey.assert_called_once_with(self.student, self.anonymous_user_id)
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        self.xblock.setup_student_view_survey.assert_called_once_with(
+            self.student, self.anonymous_user_id
+        )
+        render_mock.assert_called_once_with(
+            "static/html/limesurvey.html",
+            expected_context,
+            i18n_service=self.xblock.runtime.service(self.xblock, "i18n"),
+        )
 
+    @patch("limesurvey.limesurvey.loader.render_django_template")
     @patch("limesurvey.limesurvey.Fragment")
-    def test_student_view_survey_with_errors(self, _):
+    def test_student_view_survey_with_errors(self, _, render_mock: Mock):
         """
         Check student view is rendered correctly when an error is raised.
 
@@ -141,14 +150,22 @@ class TestLimeSurveyXBlock(TestCase):
             "show_survey": show_survey,
             "error_message": "Test exception",
         }
+        render_mock.return_value = "<div>Mocked Content</div>"
 
         self.xblock.student_view(show_survey)
 
-        self.xblock.setup_student_view_survey.assert_called_once_with(self.student, self.anonymous_user_id)
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        self.xblock.setup_student_view_survey.assert_called_once_with(
+            self.student, self.anonymous_user_id
+        )
+        render_mock.assert_called_once_with(
+            "static/html/limesurvey.html",
+            expected_context,
+            i18n_service=self.xblock.runtime.service(self.xblock, "i18n"),
+        )
 
+    @patch("limesurvey.limesurvey.loader.render_django_template")
     @patch("limesurvey.limesurvey.Fragment")
-    def test_student_view_from_studio(self, _):
+    def test_student_view_from_studio(self, _, render_mock: Mock):
         """
         Check student view is rendered correctly when called from studio.
 
@@ -167,13 +184,19 @@ class TestLimeSurveyXBlock(TestCase):
             "show_survey": show_survey,
             "error_message": None,
         }
+        render_mock.return_value = "<div>Mocked Content</div>"
 
         self.xblock.student_view(show_survey)
 
         self.xblock.setup_student_view_survey.assert_not_called()
-        self.xblock.render_template.assert_called_once_with("static/html/limesurvey.html", expected_context)
+        render_mock.assert_called_once_with(
+            "static/html/limesurvey.html",
+            expected_context,
+            i18n_service=self.xblock.runtime.service(self.xblock, "i18n"),
+        )
 
-    def test_studio_view(self):
+    @patch("limesurvey.limesurvey.loader.render_django_template")
+    def test_studio_view(self, render_mock: Mock):
         """
         Check studio view is rendered correctly.
 
@@ -194,15 +217,18 @@ class TestLimeSurveyXBlock(TestCase):
             "api_username_field": self.xblock.fields["api_username"],
             "api_password_field": self.xblock.fields["api_password"],
         }
+        render_mock.return_value = "<div>Mocked Content</div>"
 
         self.xblock.studio_view()
 
-        self.xblock.render_template.assert_called_once_with(
+        render_mock.assert_called_once_with(
             "static/html/limesurvey_edit.html",
-            expected_context
+            expected_context,
+            i18n_service=self.xblock.runtime.service(self.xblock, "i18n"),
         )
 
-    def test_instructor_view(self):
+    @patch("limesurvey.limesurvey.loader.render_django_template")
+    def test_instructor_view(self, render_mock: Mock):
         """
         Check instructor view is rendered correctly.
 
@@ -210,12 +236,14 @@ class TestLimeSurveyXBlock(TestCase):
             - The instructor view is set up for the render.
         """
         expected_context = {}
+        render_mock.return_value = "<div>Mocked Content</div>"
 
         self.xblock.instructor_view({})
 
-        self.xblock.render_template.assert_called_once_with(
+        render_mock.assert_called_once_with(
             "static/html/instructor.html",
-            expected_context
+            expected_context,
+            i18n_service=self.xblock.runtime.service(self.xblock, "i18n"),
         )
 
 
