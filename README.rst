@@ -6,19 +6,21 @@ LimeSurvey XBlock
 Purpose
 *******
 
-`XBlock`_ is the Open edX component architecture for building custom
-learning interactives.
+`XBlock`_ is the Open edX component architecture for building custom learning interactives.
 
 .. _XBlock: https://openedx.org/r/xblock
 
-LimeSurvey XBlock allows students to view and complete
-the different surveys assigned to them.
+LimeSurvey XBlock allows students to view and complete the different surveys assigned to them.
 
+**NOTE**: This XBlock doesn't deploy the LimeSurvey service. It requires an external service or a service installed
+from the Tutor stack. If you want to install it with Tutor you can use the following `plugin`_.
+
+.. _plugin: https://github.com/eduNEXT/tutor-contrib-limesurvey
 
 Getting Started
 ***************
 
-You can see the LimeSurvey in action in the XBlock Workbench.  Running the Workbench requires having docker running.
+You can see the LimeSurvey in action in the XBlock Workbench. Running the Workbench requires having docker running.
 
 .. code:: bash
 
@@ -130,6 +132,10 @@ Fields
   to use anonymous surveys you must edit the block configuration and set the value to ``True``
 - **LimeSurvey URL (String)**: The URL of the LimeSurvey installation without the trailing slash. If not
   set, it will be taken from the service configurations.
+- **LimeSurvey API username (String)**: The username to authenticate with your LimeSurvey installation you set
+  in LimeSurvey URL. If not set, it will be taken from the service configurations.
+- **LimeSurvey API password (String)**: The password to authenticate with your LimeSurvey installation you set
+  in LimeSurvey URL. If not set, it will be taken from the service configurations.
 
 
 View from Learning Management System (LMS)
@@ -155,7 +161,7 @@ the following columns:
 - **Management Console(s):** This is the URL of the administrator assigned to each component in the
   ``LimeSurvey URL`` field.
 
-To use the instructor management view, you must add this feature to your LMS configurations: 
+To use the instructor management view, you must add this feature to your LMS configurations:
 
 .. code:: python
 
