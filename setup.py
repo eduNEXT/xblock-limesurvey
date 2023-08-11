@@ -152,5 +152,5 @@ setup(
             "limesurvey = limesurvey.apps:LimeSurveyConfig",
         ],
     },
-    package_data=package_data("limesurvey", ["static", "public"]),
+    package_data=package_data("limesurvey", ["static", "public", "translations"]),
 )
