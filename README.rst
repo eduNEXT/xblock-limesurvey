@@ -15,7 +15,7 @@ This Xblock has been created as an open source contribution to the Open edX plat
 
 
 **NOTE**: This XBlock doesn't deploy the LimeSurvey service. It requires an external service or a service installed
-from the Tutor stack. If you want to install a bran new Limesurvey service using Tutor, you can use the following `plugin`_.
+from the Tutor stack. If you want to install a brand new LimeSurvey service using Tutor, you can use the following `plugin`_.
 
 .. _plugin: https://github.com/eduNEXT/tutor-contrib-limesurvey
 
@@ -45,7 +45,7 @@ These settings can be changed in ``limesurvey/settings/common.py`` or, for examp
 **NOTE**: the current ``common.py`` works with Open edX Palm version.
 
 
-Configure LimeSurvey to work with this xblock
+Configure LimeSurvey to work with this Xblock
 *********************************************
 
 From the LimeSurvey administrator, you must enable the use of the API:
@@ -67,10 +67,10 @@ Next, you must create a user with API access:
    Please, select only the necessary permissions, to avoid any unwanted modifications.
 4. Save changes.
 
-Configurations required in the open edX platform 
+Configurations required in the Open edX platform 
 *************************************************
 
-In order to avoid the need to configure the Limesurvey credentials each time the component is used, you can add your authentication configuration to your LMS settings.
+In order to avoid the need to configure the LimeSurvey credentials each time the component is used, you can add your authentication configuration to your LMS settings.
 
    .. code:: python
 
@@ -82,7 +82,7 @@ In order to avoid the need to configure the Limesurvey credentials each time the
 Enabling the XBlock in a course
 *******************************
 
-When the xblock has been installed, you can enable the LimeSurvey XBlock for a particular course in STUDIO through the advanced settings.
+When the Xblock has been installed, you can enable the LimeSurvey XBlock for a particular course in STUDIO through the advanced settings.
 
 .. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/67f62cc9-68f5-4d96-a47c-c0ef7f7b6adb
 
@@ -154,7 +154,7 @@ We're working towards getting this feature upstream.
 Experimenting with this Xblock in the Workbench
 ************************************************
 
-`XBlock`_ is the Open edX component architecture for building custom learning interactives.
+`XBlock`_ is the Open edX component architecture for building custom learning interactive components.
 
 .. _XBlock: https://openedx.org/r/xblock
 
@@ -217,7 +217,7 @@ You can start a conversation by creating a new issue on this repo summarizing yo
 
 Translations
 ============
-This Xblock is initially available in english and Spanish. You can help by translating this component to other languages. Follow the steps below:
+This Xblock is initially available in English and Spanish. You can help by translating this component to other languages. Follow the steps below:
 
 1. Create a folder for the translations in ``locale/``, eg: ``locale/fr_FR/LC_MESSAGES/``, and create
    your ``text.po`` file with all the translations.
