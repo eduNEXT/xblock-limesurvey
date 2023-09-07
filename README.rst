@@ -5,38 +5,19 @@ LimeSurvey XBlock
 
 Purpose
 *******
+LimeSurvey XBlock allows a better integration between the Open edX platform and the Open source `LimeSurvey`_ service.
 
-`XBlock`_ is the Open edX component architecture for building custom learning interactives.
+.. _LimeSurvey: https://www.limesurvey.org/
 
-.. _XBlock: https://openedx.org/r/xblock
+Once the LimeSurvey component has been added and configured into a course unit, learners can view and complete the different surveys assigned to them.
 
-LimeSurvey XBlock allows students to view and complete the different surveys assigned to them.
+This Xblock has been created as an open source contribution to the Open edX platform and has been funded by the Unidigital project from the Spanish Government - 2023. 
+
 
 **NOTE**: This XBlock doesn't deploy the LimeSurvey service. It requires an external service or a service installed
-from the Tutor stack. If you want to install it with Tutor you can use the following `plugin`_.
+from the Tutor stack. If you want to install a brand new LimeSurvey service using Tutor, you can use the following `plugin`_.
 
 .. _plugin: https://github.com/eduNEXT/tutor-contrib-limesurvey
-
-Getting Started
-***************
-
-You can see the LimeSurvey in action in the XBlock Workbench. Running the Workbench requires having docker running.
-
-.. code:: bash
-
-    git clone git@github.com:eduNEXT/xblock-limesurvey
-    virtualenv venv/
-    source venv/bin/activate
-    cd xblock-limesurvey
-    make upgrade
-    make install
-    make dev.run
-
-You can interact with the LimeSurveyXBlock in the Workbench by navigating to http://localhost:8000
-
-For details regarding how to deploy this or any other XBlock in the lms instance, see the `installing-the-xblock`_ documentation.
-
-.. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
 
 
 Compatibility Notes
@@ -64,8 +45,9 @@ These settings can be changed in ``limesurvey/settings/common.py`` or, for examp
 **NOTE**: the current ``common.py`` works with Open edX Palm version.
 
 
-Set up LimeSurvey
-*****************
+Configure LimeSurvey to work with this Xblock
+*********************************************
+
 From the LimeSurvey administrator, you must enable the use of the API:
 
 1. Login in the LimeSurvey admin → ``<LIMESURVEY_DOMAIN>/admin``
@@ -84,33 +66,23 @@ Next, you must create a user with API access:
 
    Please, select only the necessary permissions, to avoid any unwanted modifications.
 4. Save changes.
-5. Add your authentication configuration to your LMS settings.
+
+Configurations required in the Open edX platform 
+*************************************************
+
+In order to avoid the need to configure the LimeSurvey credentials each time the component is used, you can add your authentication configuration to your LMS settings.
 
    .. code:: python
 
        LIMESURVEY_API_USER = "<username>"
        LIMESURVEY_API_PASSWORD = "<password>"
+       FEATURES["ENABLE_LIMESURVEY_INSTRUCTOR_VIEW"] = True
 
 
-Configuring LimeSurvey
-**********************
+Enabling the XBlock in a course
+*******************************
 
-Survey Modes
-============
-In LimeSurvey, you can configure 2 survey modes: closed or open (anonymous).
-
-- **Closed:** Closed surveys limit access to the survey to any person, i.e., only students with
-  an access code will be able to fill it out. All surveys added to closed-access mode, must have an
-  ``attribute_1``, which allows the assignment of a unique identifier for each survey participant.
-  If this attribute is not added, students will not be able to complete the survey.
-- **Open:** Open surveys allow any student with access to the link to fill out the survey. In this mode,
-  there is no way to relate the answers to the students.
-
-
-Enabling in Studio
-******************
-
-You can enable the LimeSurvey XBlock in the studio through the advanced settings.
+When the Xblock has been installed, you can enable the LimeSurvey XBlock for a particular course in STUDIO through the advanced settings.
 
 .. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/67f62cc9-68f5-4d96-a47c-c0ef7f7b6adb
 
@@ -119,8 +91,8 @@ You can enable the LimeSurvey XBlock in the studio through the advanced settings
 3. Click the "Save changes" button.
 
 
-Configuring Component
-*********************
+Adding a LimeSurvey Component to a course unit
+**********************************************
 .. image:: https://github.com/eduNEXT/xblock-limesurvey/assets/64033729/95f42b3d-fd30-4655-ac85-07afefa81b81
 
 Fields
@@ -137,9 +109,21 @@ Fields
 - **LimeSurvey API password (String)**: The password to authenticate with your LimeSurvey installation you set
   in LimeSurvey URL. If not set, it will be taken from the service configurations.
 
+Survey Modes
+============
+In LimeSurvey, you can configure 2 survey modes: closed or open (anonymous).
 
-View from Learning Management System (LMS)
-******************************************
+- **Closed:** Closed surveys limit access to the survey to any person, i.e., only students with
+  an access code will be able to fill it out. All surveys added to closed-access mode, must have an
+  ``attribute_1``, which allows the assignment of a unique identifier for each survey participant.
+  If this attribute is not added, students will not be able to complete the survey.
+- **Open:** Open surveys allow any student with access to the link to fill out the survey. In this mode,
+  there is no way to relate the answers to the students.
+
+
+
+View from the Learning Management System (LMS)
+**********************************************
 
 As a Student
 ============
@@ -161,34 +145,49 @@ the following columns:
 - **Management Console(s):** This is the URL of the administrator assigned to each component in the
   ``LimeSurvey URL`` field.
 
-To use the instructor management view, you must add this feature to your LMS configurations:
-
-.. code:: python
-
-    FEATURES["ENABLE_LIMESURVEY_INSTRUCTOR_VIEW"] = True
 
 Currently, the LimeSurvey instructor management view is not broadly available for the community to use. So
 to use it in your installation -- eg. creating your own Open edX docker image, you must follow the instructions explained `here <https://github.com/eduNEXT/xblock-limesurvey/pull/8>`__.
 We're working towards getting this feature upstream.
 
+
+Experimenting with this Xblock in the Workbench
+************************************************
+
+`XBlock`_ is the Open edX component architecture for building custom learning interactive components.
+
+.. _XBlock: https://openedx.org/r/xblock
+
+You can see the LimeSurvey component in action in the XBlock Workbench. Running the Workbench requires having docker running.
+
+.. code:: bash
+
+    git clone git@github.com:eduNEXT/xblock-limesurvey
+    virtualenv venv/
+    source venv/bin/activate
+    cd xblock-limesurvey
+    make upgrade
+    make install
+    make dev.run
+
+Once the process is done, you can interact with the LimeSurvey XBlock in the Workbench by navigating to http://localhost:8000
+
+For details regarding how to deploy this or any other XBlock in the Open edX platform, see the `installing-the-xblock`_ documentation.
+
+.. _installing-the-xblock: https://edx.readthedocs.io/projects/xblock-tutorial/en/latest/edx_platform/devstack.html#installing-the-xblock
+
+
 Getting Help
-************
+*************
 
-Documentation
-=============
+If you're having trouble, the Open edX community has active discussion forums available at https://discuss.openedx.org where you can connect with others in the community.
 
-If you're having trouble, we have discussion forums at
-https://discuss.openedx.org where you can connect with others in the
-community.
+Also, real-time conversations are always happening on the Open edX community Slack channel. You can request a `Slack invitation`_, then join the `community Slack workspace`_.
 
-Our real-time conversations are on Slack. You can request a `Slack
-invitation`_, then join our `community Slack workspace`_.
-
-For anything non-trivial, the best path is to open an issue in this
-repository with as many details about the issue you are facing as you
-can provide.
+For anything non-trivial, the best path is to open an issue in this repository with as many details about the issue you are facing as you can provide.
 
 https://github.com/eduNEXT/xblock-limesurvey/issues
+
 
 For more information about these options, see the `Getting Help`_ page.
 
@@ -200,8 +199,7 @@ For more information about these options, see the `Getting Help`_ page.
 License
 *******
 
-The code in this repository is licensed under the AGPL-3.0 unless
-otherwise noted.
+The code in this repository is licensed under the AGPL-3.0 unless otherwise noted.
 
 Please see `LICENSE.txt <LICENSE.txt>`_ for details.
 
@@ -210,46 +208,27 @@ Contributing
 ************
 
 Contributions are very welcome.
-Please read `How To Contribute <https://openedx.org/r/how-to-contribute>`_ for details.
 
-This project is currently accepting all types of contributions, bug fixes,
-security fixes, maintenance work, or new features.  However, please make sure
-to have a discussion about your new feature idea with the maintainers prior to
-beginning development to maximize the chances of your change being accepted.
-You can start a conversation by creating a new issue on this repo summarizing
-your idea.
+This project is currently accepting all types of contributions, bug fixes, security fixes, maintenance
+work, or new features.  However, please make sure to have a discussion about your new feature idea with
+the maintainers prior to beginning development to maximize the chances of your change being accepted.
+You can start a conversation by creating a new issue on this repo summarizing your idea.
+
 
 Translations
 ============
-You can help by translating this project. Follow the steps below:
+This Xblock is initially available in English and Spanish. You can help by translating this component to other languages. Follow the steps below:
 
-1. Create a folder for the translations in ``locale/``, eg: ``locale/es_419/LC_MESSAGES/``, and create
+1. Create a folder for the translations in ``locale/``, eg: ``locale/fr_FR/LC_MESSAGES/``, and create
    your ``text.po`` file with all the translations.
 2. Run ``make compile_translations``, this will generate the ``.mo`` file.
 3. Create a pull request with your changes!
 
 
-The Open edX Code of Conduct
-****************************
-
-All community members are expected to follow the `Open edX Code of Conduct`_.
-
-.. _Open edX Code of Conduct: https://openedx.org/code-of-conduct/
-
-People
-******
-
-The assigned maintainers for this component and other project details may be
-found in `Backstage`_. Backstage pulls this data from the ``catalog-info.yaml``
-file in this repo.
-
-.. _Backstage: https://backstage.openedx.org/catalog/default/component/{{ cookiecutter.repo_name }}
-
-
 Reporting Security Issues
 *************************
 
-Please do not report security issues in public. Please email security@tcril.org.
+Please do not report a potential security issue in public. Please email security@edunext.co.
 
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/xblock-limesurvey.svg
     :target: https://pypi.python.org/pypi/xblock-limesurvey/
@@ -272,7 +251,7 @@ Please do not report security issues in public. Please email security@tcril.org.
     :alt: License
 
 .. TODO: Choose one of the statuses below and remove the other status-badge lines.
-.. |status-badge| image:: https://img.shields.io/badge/Status-Experimental-yellow
-.. .. |status-badge| image:: https://img.shields.io/badge/Status-Maintained-brightgreen
+.. .. |status-badge| image:: https://img.shields.io/badge/Status-Experimental-yellow
+.. |status-badge| image:: https://img.shields.io/badge/Status-Maintained-brightgreen
 .. .. |status-badge| image:: https://img.shields.io/badge/Status-Deprecated-orange
 .. .. |status-badge| image:: https://img.shields.io/badge/Status-Unsupported-red
