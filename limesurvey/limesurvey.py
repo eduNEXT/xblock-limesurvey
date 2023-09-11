@@ -128,25 +128,24 @@ class LimeSurveyXBlock(XBlock):
         ),
     )
 
+    anonymous_survey = Boolean(
+        default=False,
+        scope=Scope.settings,
+        help=_(
+            "Whether the survey is set to be public for everyone (open-access mode) or invite only (closed-access mode)"
+            "in the LimeSurvey administration console. When the Survey is closed-access, make sure that an additional attribute "
+            "is created in the Survey's participants table. This new field is needed to store the learner's anonymized id."
+        ),
+    )
+
     limesurvey_url = String(
         display_name=_("LimeSurvey URL"),
         default="",
         scope=Scope.settings,
         help=_(
-            "The URL of the LimeSurvey installation with the HTTP scheme and without "
+            "The URL of the LimeSurvey service, including the https scheme and without "
             "the trailing slash. If not set, it will be taken from the service "
             "configurations. Here is an example: https://limesurvey.example.com"
-        ),
-    )
-
-    limesurvey_internal_api = String(
-        default="",
-        scope=Scope.settings,
-        help=_(
-            "The URL of the LimeSurvey internal API, it's calculated from the "
-            "LimeSurvey URL after saving the XBlock in Studio. If the LimeSurvey "
-            "URL is not set, this configuration will be taken from the service "
-            "configurations."
         ),
     )
 
@@ -155,9 +154,8 @@ class LimeSurveyXBlock(XBlock):
         default="",
         scope=Scope.settings,
         help=_(
-            "The username to authenticate with your LimeSurvey installation you set "
-            "in LimeSurvey URL. If not set, it will be taken from the service "
-            "configurations."
+            "The username to authenticate with the LimeSurvey service."
+            "Leave this field empty to use the default configurations."
         ),
     )
 
@@ -166,18 +164,8 @@ class LimeSurveyXBlock(XBlock):
         default="",
         scope=Scope.settings,
         help=_(
-            "The password to authenticate with your LimeSurvey installation you set "
-            "in LimeSurvey URL. If not set, it will be taken from the service "
-            "configurations."
-        ),
-    )
-
-    anonymous_survey = Boolean(
-        default=False,
-        scope=Scope.settings,
-        help=_(
-            "Whether the survey is anonymous or not. If anonymous, the user will not "
-            "be added as participant."
+            "The password to authenticate with the LimeSurvey service. "
+            "Leave this field empty to use the default configurations."
         ),
     )
 
@@ -191,6 +179,17 @@ class LimeSurveyXBlock(XBlock):
         default=None,
         scope=Scope.user_state_summary,
         help=_("The URL of the survey for the current student."),
+    )
+
+    limesurvey_internal_api = String(
+        default="",
+        scope=Scope.settings,
+        help=_(
+            "The URL of the LimeSurvey internal API, it's calculated from the "
+            "LimeSurvey URL after saving the XBlock in Studio. If the LimeSurvey "
+            "URL is not set, this configuration will be taken from the service "
+            "configurations."
+        ),
     )
 
     access_code = String(

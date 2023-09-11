@@ -18,10 +18,10 @@
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="limesurvey_anonymous_survey">{% trans "Anonymous survey" %}</label>
+        <label class="label setting-label" for="limesurvey_anonymous_survey">{% trans "Survey mode" %}</label>
         <select id="limesurvey_anonymous_survey" class="input setting-input" name="limesurvey_anonymous_survey" >
-            <option value=1 {% if anonymous_survey %} selected{% endif %}>{% trans "True" %}</option>
-            <option value=0 {% if not anonymous_survey %} selected{% endif %}>{% trans "False" %}</option>
+            <option value=1 {% if anonymous_survey %} selected{% endif %}>{% trans "Open-access mode" %}</option>
+            <option value=0 {% if not anonymous_survey %} selected{% endif %}>{% trans "Closed-access mode" %}</option>
         </select>
       </div>
       <span class="tip setting-help"> {% trans anonymous_survey_field.help %} </span>

@@ -100,25 +100,18 @@ Fields
 - **Display name (String)**: Name of the component. This name will be displayed in the instructor dashboard.
 - **Survey ID (Integer)**: The ID of the survey to be embedded. Verify that the field value is correct,
   otherwise, the service will display an error message from the LMS.
-- **Anonymous Survey (Boolean)**: Whether the survey is anonymous or not. By default it is set to ``False``,
-  to use anonymous surveys you must edit the block configuration and set the value to ``True``
-- **LimeSurvey URL (String)**: The URL of the LimeSurvey installation without the trailing slash. If not
-  set, it will be taken from the service configurations.
-- **LimeSurvey API username (String)**: The username to authenticate with your LimeSurvey installation you set
-  in LimeSurvey URL. If not set, it will be taken from the service configurations.
-- **LimeSurvey API password (String)**: The password to authenticate with your LimeSurvey installation you set
-  in LimeSurvey URL. If not set, it will be taken from the service configurations.
+- **Survey Mode**: Whether the survey is set to be public for everyone (open-access mode) or invite only (closed-access mode) in the LimeSurvey administration console. When the Survey is closed-access, make sure that an additional attribute is created in the Survey's participants table. This new field is needed to store the learner's anonymized id.
+- **LimeSurvey URL (String)**: The URL of the LimeSurvey installation without the trailing slash. Leave this field empty to use the default configurations.
+- **LimeSurvey API username (String)**: The username to authenticate with the LimeSurvey service. Leave this field empty to use the default configurations. 
+- **LimeSurvey API password (String)**: The password to authenticate with the LimeSurvey service. Leave this field empty to use the default configurations.
 
 Survey Modes
 ============
 In LimeSurvey, you can configure 2 survey modes: closed or open (anonymous).
 
-- **Closed:** Closed surveys limit access to the survey to any person, i.e., only students with
-  an access code will be able to fill it out. All surveys added to closed-access mode, must have an
-  ``attribute_1``, which allows the assignment of a unique identifier for each survey participant.
-  If this attribute is not added, students will not be able to complete the survey.
-- **Open:** Open surveys allow any student with access to the link to fill out the survey. In this mode,
-  there is no way to relate the answers to the students.
+- **Open-access:** Open surveys allow any visitor with access to the link to fill out the survey. In this mode,
+  there is no way to relate the response to the identity of the specific learner.
+- **Closed-access:** Closed surveys limit access to the survey to a specifil list of participants. i.e., only learners that are enrolled in the course. When accessing a closed-access Survey, the LimeSurvey Xblock will automatically insert the learner information in the participants table in Limesurvey, including the course specific anonimized_id, which is stored in an additional field  (``attribute_1``) that needs to be added to the table. This allows the assignment of a unique identifier for each survey participant even when using anonymous responses.   If this attribute is not added when creating the Survey in Limesurvey, students will not be able to complete the survey.
 
 
 
