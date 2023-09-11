@@ -45,8 +45,8 @@ msgstr ""
 
 #: limesurvey.py:136
 msgid ""
-"The URL of the LimeSurvey installation with the HTTP scheme and without the "
-"trailing slash. If not set, it will be taken from the service "
+"The URL of the LimeSurvey service, including the https scheme and without "
+"the trailing slash. If not set, it will be taken from the service "
 "configurations. Here is an example: https://limesurvey.example.com"
 msgstr ""
 
@@ -63,8 +63,8 @@ msgstr ""
 
 #: limesurvey.py:158
 msgid ""
-"The username to authenticate with your LimeSurvey installation you set in "
-"LimeSurvey URL. If not set, it will be taken from the service configurations."
+"The username to authenticate with the LimeSurvey service. "
+"Leave this field empty to use the default configurations."
 msgstr ""
 
 #: limesurvey.py:165
@@ -73,14 +73,17 @@ msgstr ""
 
 #: limesurvey.py:169
 msgid ""
-"The password to authenticate with your LimeSurvey installation you set in "
-"LimeSurvey URL. If not set, it will be taken from the service configurations."
+ "The password to authenticate with the LimeSurvey service. "
+"Leave this field empty to use the default configurations."
 msgstr ""
 
-#: limesurvey.py:179
+#: limesurvey.py:135
 msgid ""
-"Whether the survey is anonymous or not. If anonymous, the user will not be "
-"added as participant."
+"Whether the survey is set to be public for everyone (open-access mode) "
+"or invite only (closed-access mode) in the LimeSurvey administration "
+"console. When the Survey is closed-access, make sure that an additional "
+"attribute is created in the Survey's participants table. This new field "
+"is needed to store the learner's anonymized id."
 msgstr ""
 
 #: limesurvey.py:187
@@ -142,15 +145,15 @@ msgid "Survey ID"
 msgstr ""
 
 #: static/html/limesurvey_edit.html:21
-msgid "Anonymous survey"
+msgid "Survey mode"
 msgstr ""
 
 #: static/html/limesurvey_edit.html:23
-msgid "True"
+msgid "Open-access mode"
 msgstr ""
 
 #: static/html/limesurvey_edit.html:24
-msgid "False"
+msgid "Closed-access mode"
 msgstr ""
 
 #: static/html/limesurvey_edit.html:38
