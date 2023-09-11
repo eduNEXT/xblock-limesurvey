@@ -132,9 +132,11 @@ class LimeSurveyXBlock(XBlock):
         default=False,
         scope=Scope.settings,
         help=_(
-            "Whether the survey is set to be public for everyone (open-access mode) or invite only (closed-access mode)"
-            "in the LimeSurvey administration console. When the Survey is closed-access, make sure that an additional attribute "
-            "is created in the Survey's participants table. This new field is needed to store the learner's anonymized id."
+            "Whether the survey is set to be public for everyone (open-access mode) "
+            "or invite only (closed-access mode) in the LimeSurvey administration "
+            "console. When the Survey is closed-access, make sure that an additional "
+            "attribute is created in the Survey's participants table. This new field "
+            "is needed to store the learner's anonymized id."
         ),
     )
 
@@ -154,7 +156,7 @@ class LimeSurveyXBlock(XBlock):
         default="",
         scope=Scope.settings,
         help=_(
-            "The username to authenticate with the LimeSurvey service."
+            "The username to authenticate with the LimeSurvey service. "
             "Leave this field empty to use the default configurations."
         ),
     )
