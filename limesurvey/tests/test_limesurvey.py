@@ -62,10 +62,10 @@ class TestFilters(TestCase):
         context = {"course": Mock(id="test-course-id"), "sections": []}
         template_name = "test-template-name"
 
-        context = self.filter.run_filter(context, template_name)
+        result = self.filter.run_filter(context, template_name)
 
         get_object_by_usage_id_mock.assert_called_once()
-        self.assertEqual(1, len(context["sections"]))
+        self.assertEqual(1, len(result.get("context", {})["sections"]))
 
 class TestLimeSurveyXBlock(TestCase):
     """

@@ -56,4 +56,7 @@ class AddInstructorLimesurveyTab(PipelineStep):
             "template_path_prefix": INSTRUCTOR_TEMPLATE_ABSOLUTE_PATH,
         }
         context["sections"].append(section_data)
-        return context
+        return {
+            "context": context,
+            "template_name": template_name,
+        }
