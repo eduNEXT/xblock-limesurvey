@@ -22,7 +22,10 @@ class AddInstructorLimesurveyTab(PipelineStep):
             template_name (str): instructor dashboard template name.
         """
         if not settings.FEATURES.get("ENABLE_LIMESURVEY_INSTRUCTOR_VIEW", False):
-            return context
+            return {
+                "context": context,
+                "template_name": template_name,
+            }
 
         course = context["course"]
         request = get_current_request()
@@ -35,7 +38,10 @@ class AddInstructorLimesurveyTab(PipelineStep):
 
         # Return if there is no LimeSurvey block in the course
         if not limesurvey_block:
-            return context
+            return {
+                "context": context,
+                "template_name": template_name,
+            }
 
         block = get_object_by_usage_id(
             request, str(course.id), str(limesurvey_block.location),

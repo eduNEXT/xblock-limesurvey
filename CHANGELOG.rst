@@ -16,6 +16,14 @@ Unreleased
 
 *
 
+0.6.4 - 2023-10-04
+**********************************************
+
+Changed
+=======
+
+* Return dictionary (in all situations) so filter can be used along with other filters.
+
 0.6.3 - 2023-10-04
 **********************************************
 
