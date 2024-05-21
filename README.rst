@@ -30,6 +30,10 @@ Compatibility Notes
 +------------------+--------------+
 | Palm             | >= 0.2.0     |
 +------------------+--------------+
+| Quince           | >= 0.2.0     |
++------------------+--------------+
+| Redwood          | >= 0.2.0     |
++------------------+--------------+
 
 The following changes to the plugin settings are necessary. If the release you are looking for is
 not listed, then the accumulation of changes from previous releases is enough.
@@ -40,9 +44,15 @@ not listed, then the accumulation of changes from previous releases is enough.
 
    LIMESURVEY_COURSEWARE_BACKEND: "limesurvey.edxapp_wrapper.backends.courseware_o_v1"
 
+**Palm, Quince and Redwood**
+
+.. code-block:: yaml
+
+   LIMESURVEY_COURSEWARE_BACKEND: "limesurvey.edxapp_wrapper.backends.courseware_p_v1"
+
 These settings can be changed in ``limesurvey/settings/common.py`` or, for example, in tutor configurations.
 
-**NOTE**: the current ``common.py`` works with Open edX Palm version.
+**NOTE**: the current ``common.py`` works with Open edX Palm, Quince and Redwood version.
 
 
 Configure LimeSurvey to work with this Xblock
@@ -67,16 +77,16 @@ Next, you must create a user with API access:
    Please, select only the necessary permissions, to avoid any unwanted modifications.
 4. Save changes.
 
-Configurations required in the Open edX platform 
+Configurations required in the Open edX platform
 *************************************************
 
 In order to avoid the need to configure the LimeSurvey credentials each time the component is used, you can add your authentication configuration to your LMS settings.
 
-   .. code:: python
+.. code:: python
 
-       LIMESURVEY_API_USER = "<username>"
-       LIMESURVEY_API_PASSWORD = "<password>"
-       FEATURES["ENABLE_LIMESURVEY_INSTRUCTOR_VIEW"] = True
+    LIMESURVEY_API_USER = "<username>"
+    LIMESURVEY_API_PASSWORD = "<password>"
+    FEATURES["ENABLE_LIMESURVEY_INSTRUCTOR_VIEW"] = True
 
 
 Enabling the XBlock in a course
